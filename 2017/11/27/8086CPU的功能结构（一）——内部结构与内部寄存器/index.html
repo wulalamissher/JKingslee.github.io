@@ -15,18 +15,18 @@
 
 
 
-<meta name="description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更">
-<meta name="keywords" content="Web,DNS,CDN">
+<meta name="description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;n">
+<meta name="keywords" content="微机原理,CPU,寄存器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
-<meta property="og:url" content="http://yoursite.com/2017/11/27/深入Web请求过程/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/index.html">
 <meta property="og:site_name" content="Kingslee的博客">
-<meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元">
+<meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-11-29T12:32:43.126Z">
+<meta property="og:updated_time" content="2017-11-29T12:56:02.873Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
-<meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元">
+<meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -100,7 +100,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="http://www.qq1234.org/uploads/allimg/150330/14302WV9-1.jpg" class="animated zoomIn">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
@@ -176,7 +176,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="http://www.qq1234.org/uploads/allimg/150330/14302WV9-1.jpg" class="animated zoomIn">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
@@ -213,10 +213,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-深入Web请求过程" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-8086CPU的功能结构（一）——内部结构与内部寄存器" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/11/27/深入Web请求过程/" class="article-date">
+      <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" class="article-date">
       <time datetime="2017-11-27T07:18:25.000Z" itemprop="datePublished">2017-11-27</time>
 </a>
 
@@ -247,7 +247,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CDN/">CDN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DNS/">DNS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/">Web</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寄存器/">寄存器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微机原理/">微机原理</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -257,7 +257,7 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 <strong>学习笔记</strong>，会有后续。在兴趣中学习才更有动力。<br></p>
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 <strong>学习笔记</strong>，会有后续。在兴趣中学习才更有动力。<br></p>
 <h1 id="1-8088-8086CPU的内部结构"><a href="#1-8088-8086CPU的内部结构" class="headerlink" title="1.8088/8086CPU的内部结构"></a>1.8088/8086CPU的内部结构</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。</p>
 <p><excerpt in="" index=""> </excerpt></p>
 <ul>
@@ -311,13 +311,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/11/27/深入Web请求过程/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
+        <p><span>本文标题:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
         <p><span>发布时间:</span>2017-11-27, 15:18:25</p>
-        <p><span>最后更新:</span>2017-11-29, 20:32:43</p>
+        <p><span>最后更新:</span>2017-11-29, 20:56:02</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/11/27/深入Web请求过程/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/深入Web请求过程/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/27/深入Web请求过程/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -396,7 +396,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2017/11/27/深入Web请求过程/" data-title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器" data-url="http://yoursite.com/2017/11/27/深入Web请求过程/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" data-title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器" data-url="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/"></div>
     <script>
         var duoshuoQuery = {short_name:""};
         var loadComment = function(){
@@ -431,7 +431,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/28/My-first-blog/">'My-first-blog'</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/深入Web请求过程/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/28/My-first-blog/">'My-first-blog'</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
 
 
 
