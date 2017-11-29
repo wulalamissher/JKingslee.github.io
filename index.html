@@ -306,16 +306,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+              <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<p><excerpt in="" index=""> </excerpt></p>
+<ul>
+<li>
+          
       
     </div>
     
@@ -324,6 +319,10 @@
       
 
       
+      
+        <p class="article-more-link">
+          <a href="/2017/11/27/hello-world/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -370,46 +369,12 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 <strong>学习笔记</strong>，会有后续。在兴趣中学习才更有动力。<br></p>
+              <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在迈出了第一步。下一步会自己购买域名搭建环境，做一个完完全全的自主化的博客，为了自己的兴趣也为了未来有展现自己的资本。这篇博客是在微机原理课下做的 <strong>学习笔记</strong>，会有后续。在兴趣中学习才更有动力。<br></p>
 <h1 id="1-8088-8086CPU的内部结构"><a href="#1-8088-8086CPU的内部结构" class="headerlink" title="1.8088/8086CPU的内部结构"></a>1.8088/8086CPU的内部结构</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。</p>
-<h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ol>
-<li>浏览器会检查<strong>浏览器的缓存</strong>中有没有这个域名对应的解析过的IP地址，如果缓存中有，那么这个域名的解析过程就将结束。</li>
-<li>如果浏览器的缓存中没有IP地址，浏览器就会查找<strong>操作系统缓存</strong>中是否有这个域名的DNS解析结果。以上两个步骤都是在本机中完成，还没有涉及真正的域名解析服务器。</li>
-<li>如果在本机中无法完成域名的解析，就会真正请求域名服务器来解析这个域名。在我们的网络配置中有“DNS服务器地址”这一项，当在本机中无法完成解析的时候，操作系统会把这个域名发送给网络配置中设置的<strong>LDNS</strong>，也就是本地区的域名服务器。大约80%的域名解析都带这里就可以完成了，所以LDNS承担了主要的域名解析工作。</li>
-<li>如果LDNS仍然没有命中，就直接到<strong>Root Server域名服务器</strong>请求解析。</li>
-<li>根域名服务器返回给本地域名服务器一个查询域的<strong>主域名服务器</strong>（gTLD Server）地址。gTLD是国级顶级域名服务器，如 .com、.cn等。</li>
-<li>本地域名服务器（LDNS）再向上一步返回的gTLD服务器发送请求。</li>
-<li>接受请求的gTLD服务器查找并返回此域名对应的<strong>Name Server域名服务器</strong>的地址，这个Name Server通常就是自己注册的域名服务器。例如在某个域名服务提供商申请的域名，那么这个域名解析任务就由这个域名提供商的服务器来完成。</li>
-<li>Name Server域名服务器会查询存储的域名和IP的映射关系表，在正常情况下都根据域名得到目标IP记录，连同一个TTL值返回给DNS Server域名服务器。</li>
-<li>返回该域名对应的IP和TTL值，LDNS会缓存这个域名和IP的对应关系，缓存时间由TTL值控制。</li>
-<li>将解析结果返回给用户，用户根据TTL值缓存在本地系统缓存中，域名解析过程结束。</li>
-</ol>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;浏览器、操作系统和本地域名服务器的域名缓存<strong>时间和大小</strong>都是有的限制，主要是时间限制，一般为几分钟到几小时不等，一般缓存空间不是影响域名失效的主要因素。</p>
-<h2 id="总线接口单元BIU"><a href="#总线接口单元BIU" class="headerlink" title="总线接口单元BIU"></a>总线接口单元BIU</h2><ul>
-<li><strong>A记录</strong>：A代表的是Address，用来指定域名对应的IP地址。A记录可以将多个域名解析到一个IP地址，但不能将一个域名解析到多个IP地址。</li>
-<li><strong>MX记录</strong>：表示的是Mail Exchange，就是将某个域名下的邮件服务器指向自己的Mail Server。</li>
-<li><strong>CNAME记录</strong>：全程是Canonical Name（别名解析）。所谓的别名解析就是可以为一个域名设置一个或多个别名。如将 Hang6.github.io解析到 yhang6.com。其中后者是前者的别名。</li>
-<li><strong>NS记录</strong>：为某个域名指定DNS解析服务器，也就是这个域名有指定的IP地址的DNS服务器去解析。</li>
-<li><strong>TXT记录</strong>：为某个主机名或域名设置说明，如可以为 yhang6.com设置TXT记录为“小Hang同学的博客”这样的说明。</li>
-</ul>
-<h1 id="2-8088-8086CPU的内部寄存器"><a href="#2-8088-8086CPU的内部寄存器" class="headerlink" title="2.8088/8086CPU的内部寄存器"></a>2.8088/8086CPU的内部寄存器</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;CDN就是内容分布网络（Content Delivery Network），是构筑在现有Internet上的一种先进的流量分配网络。其<strong>目的</strong>是通过在现有的Internet中增加一层新的网络架构，将网站的内容发步到最接近用户的网络“边缘”，提高用户访问网站的响应速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;CDN有别于镜像，它比镜像更加智能，可以有这样一个比喻：<strong>CDN=镜像+缓存+整体负载均衡（GSLB）</strong>。因此，CDN可以明显提高Internet中信息流动的效率。目前CDN都<strong>以缓存网站中的静态数据为主</strong>。用户在从主站服务器请求到动态数据之后，再从CDN上下载静态数据，从而加速网页数据内容的下载速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常CDN要达到以下几个目标：</p>
+<p><excerpt in="" index=""> </excerpt></p>
 <ul>
-<li>可扩展。分为性能可扩展性和成本可扩展性。</li>
-<li>安全性。强调提供物理设备、网络、软件、数据和服务过程的安全性。</li>
-<li>可靠性、响应和执行。服务可用性能能够处理可能的故障和用户体验下降的问题，通过负载均衡及时提供网络的容错机制。</li>
-</ul>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;负载均衡（Load Balance）是对工作任务进行平衡、分摊到多个操作单元上执行，如图片服务器、应用服务器等，共同完成工作任务。它可以提高服务器响应速度及利用效率，避免软件或者硬件模块出现单点失效，解决网络拥塞问题，实现地理位置无关性，为用户提供较一致的访问质量。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常有三种负载均衡架构，分别是<strong>链路负载均衡、集群负载均衡、操作系统负载均衡</strong>。</p>
-<ul>
-<li>链路负载均衡就是通过DNS解析成不同的IP，然后根据IP访问不同的目标服务器实现的。这种方式的优点就是用户会直接访问目标服务器，速度会很快。但缺点是DNS都有缓存，一旦某台Web Server挂掉，就很难及时更新用户的域名解析结构。</li>
-<li>集群负载均衡一般分为硬件负载均衡和软件负载均衡。<strong>硬件负载均衡</strong>一般使用一台专门的硬件设备来转发请求，这台设备性能非常好，但是非常昂贵；<strong>软件负载均衡</strong>是使用最普遍的一种负载方式，特点是成本很低，但是一般一次访问请求要经过多次代理服务器，会增加网络延时。</li>
-<li>操作系统负载均衡就是利用操作系统级别的软中断或者硬件中断来达到负载均衡，如可以设置多队列网卡等来实现。</li>
-</ul>
-<hr>
-<p>参考自：《微型计算机原理与接口技术》（第三版）——冯博琴 吴宁<br>整理不易，转载请注明出处：<a href="http://blog.csdn.net/qq_40951128/article/details/78646248/" target="_blank" rel="noopener">Jacob的博客</a></p>
-
+<li>
+          
       
     </div>
     
@@ -426,6 +391,10 @@
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CDN/">CDN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DNS/">DNS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/">Web</a></li></ul>
     </div>
 
+      
+        <p class="article-more-link">
+          <a href="/2017/11/27/深入Web请求过程/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
