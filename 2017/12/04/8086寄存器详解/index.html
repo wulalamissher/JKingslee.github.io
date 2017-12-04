@@ -15,18 +15,17 @@
 
 
 
-<meta name="description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;n">
-<meta name="keywords" content="微机原理,CPU,寄存器">
+<meta name="keywords" content="微机原理,寄存器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
-<meta property="og:url" content="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/index.html">
+<meta property="og:title" content="8086寄存器笔记">
+<meta property="og:url" content="http://yoursite.com/2017/12/04/8086寄存器详解/index.html">
 <meta property="og:site_name" content="Kingslee的博客">
-<meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-11-29T13:32:55.268Z">
+<meta property="og:image" content="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&fm=214&gp=0.jpg">
+<meta property="og:updated_time" content="2017-12-04T09:35:04.136Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
-<meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
+<meta name="twitter:title" content="8086寄存器笔记">
+<meta name="twitter:image" content="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&fm=214&gp=0.jpg">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -58,7 +57,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>8088/8086CPU的功能结构（一）——内部结构与内部寄存器 | Kingslee的博客</title>
+<title>8086寄存器笔记 | Kingslee的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -213,11 +212,11 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
 </nav>
-      <div class="body-wrap"><article id="post-8086CPU的功能结构（一）——内部结构与内部寄存器" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-8086寄存器详解" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" class="article-date">
-      <time datetime="2017-11-27T07:18:25.000Z" itemprop="datePublished">2017-11-27</time>
+      <a href="/2017/12/04/8086寄存器详解/" class="article-date">
+      <time datetime="2017-12-04T09:30:25.000Z" itemprop="datePublished">2017-12-04</time>
 </a>
 
 
@@ -232,7 +231,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      8088/8086CPU的功能结构（一）——内部结构与内部寄存器
+      8086寄存器笔记
     </h1>
   
 
@@ -247,7 +246,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寄存器/">寄存器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微机原理/">微机原理</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寄存器/">寄存器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微机原理/">微机原理</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -257,42 +256,20 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 <strong>学习笔记</strong>，会有后续。在兴趣中学习才更有动力。<br></p>
-<h1 id="1-8088-8086CPU的内部结构"><a href="#1-8088-8086CPU的内部结构" class="headerlink" title="1.8088/8086CPU的内部结构"></a>1.8088/8086CPU的内部结构</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。</p>
-<p><excerpt in="" index=""> </excerpt></p>
+        <p><excerpt in="" index=""> </excerpt></p>
 <ul>
 <li><a id="more"></a>
 <the rest="" of="" contents文="">
 
 </the></li>
 </ul>
-<h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ol>
-<li>浏览器会检查<strong>浏览器的缓存</strong>中有没有这个域名对应的解析过的IP地址，如果缓存中有，那么这个域名的解析过程就将结束。</li>
-</ol>
-<h2 id="总线接口单元BIU"><a href="#总线接口单元BIU" class="headerlink" title="总线接口单元BIU"></a>总线接口单元BIU</h2><ul>
-<li><strong>A记录</strong>：A代表的是Address，用来指定域名对应的IP地址。A记录可以将多个域名解析到一个IP地址，但不能将一个域名解析到多个IP地址。</li>
-<li><strong>MX记录</strong>：表示的是Mail Exchange，就是将某个域名下的邮件服务器指向自己的Mail Server。</li>
-<li><strong>CNAME记录</strong>：全程是Canonical Name（别名解析）。所谓的别名解析就是可以为一个域名设置一个或多个别名。如将 Hang6.github.io解析到 yhang6.com。其中后者是前者的别名。</li>
-<li><strong>NS记录</strong>：为某个域名指定DNS解析服务器，也就是这个域名有指定的IP地址的DNS服务器去解析。</li>
-<li><strong>TXT记录</strong>：为某个主机名或域名设置说明，如可以为 yhang6.com设置TXT记录为“小Hang同学的博客”这样的说明。</li>
-</ul>
-<h1 id="2-8088-8086CPU的内部寄存器"><a href="#2-8088-8086CPU的内部寄存器" class="headerlink" title="2.8088/8086CPU的内部寄存器"></a>2.8088/8086CPU的内部寄存器</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;CDN就是内容分布网络（Content Delivery Network），是构筑在现有Internet上的一种先进的流量分配网络。其<strong>目的</strong>是通过在现有的Internet中增加一层新的网络架构，将网站的内容发步到最接近用户的网络“边缘”，提高用户访问网站的响应速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;CDN有别于镜像，它比镜像更加智能，可以有这样一个比喻：<strong>CDN=镜像+缓存+整体负载均衡（GSLB）</strong>。因此，CDN可以明显提高Internet中信息流动的效率。目前CDN都<strong>以缓存网站中的静态数据为主</strong>。用户在从主站服务器请求到动态数据之后，再从CDN上下载静态数据，从而加速网页数据内容的下载速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常CDN要达到以下几个目标：</p>
-<ul>
-<li>可扩展。分为性能可扩展性和成本可扩展性。</li>
-<li>安全性。强调提供物理设备、网络、软件、数据和服务过程的安全性。</li>
-<li>可靠性、响应和执行。服务可用性能能够处理可能的故障和用户体验下降的问题，通过负载均衡及时提供网络的容错机制。</li>
-</ul>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;负载均衡（Load Balance）是对工作任务进行平衡、分摊到多个操作单元上执行，如图片服务器、应用服务器等，共同完成工作任务。它可以提高服务器响应速度及利用效率，避免软件或者硬件模块出现单点失效，解决网络拥塞问题，实现地理位置无关性，为用户提供较一致的访问质量。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常有三种负载均衡架构，分别是<strong>链路负载均衡、集群负载均衡、操作系统负载均衡</strong>。</p>
-<ul>
-<li>链路负载均衡就是通过DNS解析成不同的IP，然后根据IP访问不同的目标服务器实现的。这种方式的优点就是用户会直接访问目标服务器，速度会很快。但缺点是DNS都有缓存，一旦某台Web Server挂掉，就很难及时更新用户的域名解析结构。</li>
-<li>集群负载均衡一般分为硬件负载均衡和软件负载均衡。<strong>硬件负载均衡</strong>一般使用一台专门的硬件设备来转发请求，这台设备性能非常好，但是非常昂贵；<strong>软件负载均衡</strong>是使用最普遍的一种负载方式，特点是成本很低，但是一般一次访问请求要经过多次代理服务器，会增加网络延时。</li>
-<li>操作系统负载均衡就是利用操作系统级别的软中断或者硬件中断来达到负载均衡，如可以设置多队列网卡等来实现。</li>
-</ul>
-<hr>
-<p>参考自：《微型计算机原理与接口技术》（第三版）——冯博琴 吴宁<br>整理不易，转载请注明出处：<a href="http://blog.csdn.net/qq_40951128/article/details/78646248/" target="_blank" rel="noopener">Jacob的博客</a></p>
+<h1 id="8086寄存器详解笔记"><a href="#8086寄存器详解笔记" class="headerlink" title="8086寄存器详解笔记"></a>8086寄存器详解笔记</h1><h2 id="8088-8086寄存器认识"><a href="#8088-8086寄存器认识" class="headerlink" title="8088/8086寄存器认识"></a>8088/8086寄存器认识</h2><p>8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。</p>
+<p>分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack Pointer）,BP（基址指针寄存器Base Pointer）,SI（Source Index源变址）,DI（Destination Index目的变址）,IP（Instruction Pointer指令指针）,FLAGS（flags标志寄存器）,CS（Code Segment代码段寄存器）,DS（Data Segment数据段）,ES（Extra Segment附加数据段）,SS（Stack Segment堆栈段）。</p>
+<p>这14个寄存器最好都可以记住，在之后的学习过程中会相对省力。记忆也需要技巧，笔者建议用英文来辅助记忆，不但不会搞混而且会更容易地记忆寄存器相对应的功能。</p>
+<p><img src="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&amp;fm=214&amp;gp=0.jpg" alt="“寄存器图1”"></p>
+<p>这14个寄存器分为三大类，通用寄存器，段寄存器，控制寄存器。下面对个各类别进行详细学习。</p>
+<h2 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h2><h3 id="AX：累加器"><a href="#AX：累加器" class="headerlink" title="AX：累加器"></a>AX：累加器</h3><h4 id="AX介绍："><a href="#AX介绍：" class="headerlink" title="AX介绍："></a>AX介绍：</h4><p>关于算数逻辑运算的操作数存放在这里，还有I/O指令以及外设接口信息也用它存放。AX 寄存器可以分为两个独立的 8 位的 AH （high8位）和 AL（low8位） 寄存器。</p>
+<h4 id="AX的特殊用途："><a href="#AX的特殊用途：" class="headerlink" title="AX的特殊用途："></a>AX的特殊用途：</h4><p>AX 寄存器具有的特殊用途是在使用DIV 和 MUL 指令时体现，DIV 在 8086 CPU 中是除法指令，而在使用除法的时候有两种情况，即除数可以是 8 位或者是 16 位的，而且<strong>除数</strong>可以存放在寄存器中或者是内存单元中，而至于<strong>被除数</strong>的话，应该由 AX 来代替。当除数是 8 位时，被除数一定会是 16 位的，并且默认是放在 AX 寄存器中，而当除数是 16 位时，被除数一定是 32 位的，因为 AX 是 16 位寄存器，自然，放不下32 位的被除数，所以，在这里还需要使用另一个 16 位寄存器 DX ，其中 DX 存放 32 位的被除数的高 16 位，而 AX 则存放 32 位的被除数的低 16 位，同时，AX 的作用还不仅仅是用来保存被除数的，当除法指令执行完成以后，<br>如果除数是 8 位的，则在 AL 中会保存此次除法操作的商，而在AH 中则会保存此次除法操作的余数，<br>当然，如果除数是 16 位的话，则 AX 中会保存本次除法操作的商，而 DX 则保存本次除法操作的余数。<br>上面介绍的是 AX 寄存器在除法操作中的应用，下面还需要介绍一下AX 在乘法操作中的应用，<br>当使用 MUL 做乘法运算时，两个相乘的数要么都是 8 位，要么都是 16 位（位数要对齐），<br>如果两个相乘的数都是 8 位的话，则一个默认是放在 AL 中，<br>而另一个 8 位的乘数则位于其他的寄存器或者说是内存字节单元中，<br>而如果两个相乘的数都是 16 位的话，则一个默认存放在 AX 中，<br>另一个 16 位的则是位于 16 的寄存器中或者是某个内存字单元中。<br>同时，当 MUL 指令执行完毕后，如果是 8 位的乘法运算，则默认乘法运算的结果是保存在 AX 中，<br>而如果是 16 位的乘法运算的话，则默认乘法运算的结果有 32 位，<br>其中，高位默认保存在 DX 中，而低位则默认保存在 AX 中。</p>
 
       
     </div>
@@ -301,13 +278,13 @@
   
     
     <div class="copyright">
-        <p><span>Title:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
+        <p><span>Title:</span><a href="/2017/12/04/8086寄存器详解/">8086寄存器笔记</a></p>
         <p><span>Author:</span><a href="/" title="Back to Homepage">JKingslee的博客</a></p>
-        <p><span>Created:</span>2017-11-27, 15:18:25</p>
-        <p><span>Updated:</span>2017-11-29, 21:32:55</p>
+        <p><span>Created:</span>2017-12-04, 17:30:25</p>
+        <p><span>Updated:</span>2017-12-04, 17:35:04</p>
         <p>
-            <span>Full URL:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
-            <span class="copy-path" data-clipboard-text="From http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　By JKingslee的博客" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <span>Full URL:</span><a class="post-url" href="/2017/12/04/8086寄存器详解/" title="8086寄存器笔记">http://yoursite.com/2017/12/04/8086寄存器详解/</a>
+            <span class="copy-path" data-clipboard-text="From http://yoursite.com/2017/12/04/8086寄存器详解/　　By JKingslee的博客" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -319,12 +296,12 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/11/27/hello-world/">
-                    Hello World
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/11/30/深入Web请求过程/">
+                    深入Web请求过程
                 </a>
             </div>
-        
         
     </nav>
 
@@ -334,7 +311,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#说明"><span class="toc-number">1.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-8088-8086CPU的内部结构"><span class="toc-number">2.</span> <span class="toc-text">1.8088/8086CPU的内部结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#执行单元EU"><span class="toc-number">2.1.</span> <span class="toc-text">执行单元EU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总线接口单元BIU"><span class="toc-number">2.2.</span> <span class="toc-text">总线接口单元BIU</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-8088-8086CPU的内部寄存器"><span class="toc-number">3.</span> <span class="toc-text">2.8088/8086CPU的内部寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-number">3.1.</span> <span class="toc-text">负载均衡</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#8086寄存器详解笔记"><span class="toc-number">1.</span> <span class="toc-text">8086寄存器详解笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#8088-8086寄存器认识"><span class="toc-number">1.1.</span> <span class="toc-text">8088/8086寄存器认识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通用寄存器"><span class="toc-number">1.2.</span> <span class="toc-text">通用寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AX：累加器"><span class="toc-number">1.2.1.</span> <span class="toc-text">AX：累加器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AX介绍："><span class="toc-number">1.2.1.1.</span> <span class="toc-text">AX介绍：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AX的特殊用途："><span class="toc-number">1.2.1.2.</span> <span class="toc-text">AX的特殊用途：</span></a></li></ol></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -370,7 +347,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"8088/8086CPU的功能结构（一）——内部结构与内部寄存器　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"8086寄存器笔记　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -386,7 +363,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" data-title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器" data-url="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/12/04/8086寄存器详解/" data-title="8086寄存器笔记" data-url="http://yoursite.com/2017/12/04/8086寄存器详解/"></div>
     <script>
         var duoshuoQuery = {short_name:""};
         var loadComment = function(){
@@ -409,15 +386,15 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/11/27/hello-world/" title="Pre: Hello World">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
         
 
         <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+            <a href="/2017/11/30/深入Web请求过程/" title="Next: 深入Web请求过程">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 
