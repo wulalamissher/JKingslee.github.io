@@ -23,10 +23,12 @@
 <meta property="og:site_name" content="Kingslee的博客">
 <meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-11-29T13:32:55.268Z">
+<meta property="og:image" content="https://pan.baidu.com/s/1i58GhxF">
+<meta property="og:updated_time" content="2017-12-04T11:51:21.494Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
+<meta name="twitter:image" content="https://pan.baidu.com/s/1i58GhxF">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -211,7 +213,7 @@
             </nav>
         </header>                
     </div>
-    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap"><article id="post-8086CPU的功能结构（一）——内部结构与内部寄存器" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -264,17 +266,19 @@
 <li><a id="more"></a>
 <the rest="" of="" contents文="">
 
+<p>​</p>
 </the></li>
 </ul>
-<h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ol>
-<li>浏览器会检查<strong>浏览器的缓存</strong>中有没有这个域名对应的解析过的IP地址，如果缓存中有，那么这个域名的解析过程就将结束。</li>
-</ol>
+<p><img src="https://pan.baidu.com/s/1i58GhxF" alt="总线"></p>
+<h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ul>
+<li>负责执行指令。EU在工作时不断地从指令队列取出指令代码，并完成指令所要求的操作。</li>
+<li>它由算术逻辑单元ALU、通用寄存器REGs、标志寄存器FLAGS和EU控制部件组成。 </li>
+<li>各部件的功能如下：<br><strong>ALU</strong>：即运算器，进行算术、逻辑、移位、偏移地址计算等各种运算。<br><strong>FLAGS</strong>：存放运算结果的特征，如进借位、是否为零、奇偶性、溢出等。<br><strong>REGs</strong>：临时存放操作数、运算结果以及操作数地址等。<br><strong>EU控制部件</strong>：接收指令队列中的指令，进行指令译码、分析，形成各种控制信号，实现EU各个部件完成规定动作的控制。</li>
+</ul>
 <h2 id="总线接口单元BIU"><a href="#总线接口单元BIU" class="headerlink" title="总线接口单元BIU"></a>总线接口单元BIU</h2><ul>
-<li><strong>A记录</strong>：A代表的是Address，用来指定域名对应的IP地址。A记录可以将多个域名解析到一个IP地址，但不能将一个域名解析到多个IP地址。</li>
-<li><strong>MX记录</strong>：表示的是Mail Exchange，就是将某个域名下的邮件服务器指向自己的Mail Server。</li>
-<li><strong>CNAME记录</strong>：全程是Canonical Name（别名解析）。所谓的别名解析就是可以为一个域名设置一个或多个别名。如将 Hang6.github.io解析到 yhang6.com。其中后者是前者的别名。</li>
-<li><strong>NS记录</strong>：为某个域名指定DNS解析服务器，也就是这个域名有指定的IP地址的DNS服务器去解析。</li>
-<li><strong>TXT记录</strong>：为某个主机名或域名设置说明，如可以为 yhang6.com设置TXT记录为“小Hang同学的博客”这样的说明。</li>
+<li>负责CPU与存储器、I/O接口之间的信息 （包括数据、地址、控制命令等）传送。 包括生成访问存储器所需的20位的物理地址、不断从内存中取指令并送到指令队列、以及配合EU对指定的内存单元或者外设端口进行数据存取操作。</li>
+<li>BIU由段寄存器、指令指针寄存器IP、指令队列、地址加法器以及总线控制逻辑组成。</li>
+<li>各部件的功能如下：<br><strong>总线控制逻辑</strong>：CPU与外总线之间的接口，实现指令、数据以及其他外部信息的存取。<br><strong>段寄存器</strong>：存放存储器段的段基地址。<br><strong>指令指针寄存器</strong>：存放当前要读取的指令的地址。它相当于前面介绍过的指令计数器PC。<br><strong>指令队列</strong>：8088和8086的指令 队列长度分别为4字节和6字节，为FIFO(先进先出)结构。当EU从指令队列中取走指令，指令队列出现空字节时，BIU就自动执行一次取指令周期，从内 存中取出后续的指令代码放入队列中。当EU需要数据时，BIU根据EU给出的地址，从指定的内存单元或外设中取出数据供EU使用。当运算结束时，BIU将 运算结果送入指定的内存单元或外设。当指令队列空时，EU就等待，直到有指令为止。若BIU正在取指令，EU发出访问总线的请求，则必须等BIU取指令完 毕后，该请求才能得到响应。一般情况下，程序顺序执行，当遇到跳转指令时，BIU就使指令队列复位，从新地址取出指令，并立即传给EU去执行。指令队列在 EU和BIU之间起到了“桥梁”的作用（或者说是一个指令“传送带”，源源不断地把指令从BIU送到EU），使BIU和EU可以并行工作。<br><strong>地址加法器</strong>：用来产生20位的物理地址。8086/8088的寄存器都是16位的，无法装载20位的物理地址。为了解决这个问题，8088/8086采用了将地址空间分段的方法，即将220（1MB） 的地址空间分为若干个64KB的段，然后用段基址加上段内偏移来访问物理存储器。8088/8086规定，分段总是从以16字节为单位的边界处开始，所以 段的起始地址最低四位总是0，即XXXX0H，这样每个段的基地址只需用16位便可表示。在不严格的情况下，也可以说段基址是段起始地址的高16位（若段 是以64KB为边界，则这种说法就是完全正确的）。由于段基址的这个特点，BIU在计算存储器的物理地址时，即是将段基址左移4位然后与段内偏移相加获 得。如下图所示。</li>
 </ul>
 <h1 id="2-8088-8086CPU的内部寄存器"><a href="#2-8088-8086CPU的内部寄存器" class="headerlink" title="2.8088/8086CPU的内部寄存器"></a>2.8088/8086CPU的内部寄存器</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;CDN就是内容分布网络（Content Delivery Network），是构筑在现有Internet上的一种先进的流量分配网络。其<strong>目的</strong>是通过在现有的Internet中增加一层新的网络架构，将网站的内容发步到最接近用户的网络“边缘”，提高用户访问网站的响应速度。</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;CDN有别于镜像，它比镜像更加智能，可以有这样一个比喻：<strong>CDN=镜像+缓存+整体负载均衡（GSLB）</strong>。因此，CDN可以明显提高Internet中信息流动的效率。目前CDN都<strong>以缓存网站中的静态数据为主</strong>。用户在从主站服务器请求到动态数据之后，再从CDN上下载静态数据，从而加速网页数据内容的下载速度。</p>
@@ -301,17 +305,17 @@
   
     
     <div class="copyright">
-        <p><span>Title:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
-        <p><span>Author:</span><a href="/" title="Back to Homepage">JKingslee的博客</a></p>
-        <p><span>Created:</span>2017-11-27, 15:18:25</p>
-        <p><span>Updated:</span>2017-11-29, 21:32:55</p>
+        <p><span>本文标题:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2017-11-27, 15:18:25</p>
+        <p><span>最后更新:</span>2017-12-04, 19:51:21</p>
         <p>
-            <span>Full URL:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
-            <span class="copy-path" data-clipboard-text="From http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　By JKingslee的博客" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -332,7 +336,7 @@
 </article>
 
     <div id="toc" class="toc-article">
-        <strong class="toc-title">Contents</strong>
+        <strong class="toc-title">文章目录</strong>
         
             <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#说明"><span class="toc-number">1.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-8088-8086CPU的内部结构"><span class="toc-number">2.</span> <span class="toc-text">1.8088/8086CPU的内部结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#执行单元EU"><span class="toc-number">2.1.</span> <span class="toc-text">执行单元EU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总线接口单元BIU"><span class="toc-number">2.2.</span> <span class="toc-text">总线接口单元BIU</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-8088-8086CPU的内部寄存器"><span class="toc-number">3.</span> <span class="toc-text">2.8088/8086CPU的内部寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-number">3.1.</span> <span class="toc-text">负载均衡</span></a></li></ol></li></ol>
         
@@ -348,10 +352,10 @@
         }
     </style>
 
-    <input type="button" id="tocButton" value="Hide"  title="Show or Hide Table of Contents">
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
     </script>
 
 
@@ -409,19 +413,19 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/11/27/hello-world/" title="Pre: Hello World">
+            <a href="/2017/11/27/hello-world/" title="上一篇: Hello World">
                 <i class="fa fa-angle-left"></i>
             </a>
         
 
-        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8086寄存器笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/28/My-first-blog/">'My-first-blog'</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/28/My-first-blog/">'My-first-blog'</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
 
 
 
@@ -438,14 +442,14 @@
                 2016-2017 JKingslee的博客
             </div>
             <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
             </div>
         </div>
         
             <div class="visit">
                 
                     <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
                 
@@ -454,7 +458,7 @@
                 
                 
                     <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit"  title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
                         </span>
                     </span>
                 
@@ -487,9 +491,9 @@
 
 
 <div class="scroll" id="scroll">
-    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide();" title="Comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
 </div>
 <script>
     // Open in New Window
