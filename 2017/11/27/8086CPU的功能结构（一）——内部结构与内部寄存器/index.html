@@ -24,7 +24,11 @@
 <meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512388800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7835964177110966465&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
-<meta property="og:updated_time" content="2017-12-04T12:15:21.794Z">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&time=1512392400&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-SHi11S48O1lySWnrkjjyY7CPpts%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7836848563557888678&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&time=1512392400&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-hNk8KjL%2FSIHIWmwLN4k7nqIvK6I%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7836914878310656711&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1512403221379&di=750b87cd32eac42bf53d02314681c68c&imgtype=0&src=http%3A%2F%2Fpic.w2bc.com%2Fupload%2F201604%2F09%2F201604091548395525.jpg">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201010/3/0_128612503004cB.gif">
+<meta property="og:updated_time" content="2017-12-04T13:20:32.995Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
@@ -272,30 +276,24 @@
 <h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ul>
 <li>负责执行指令。EU在工作时不断地从指令队列取出指令代码，并完成指令所要求的操作。</li>
 <li>它由算术逻辑单元ALU、通用寄存器REGs、标志寄存器FLAGS和EU控制部件组成。 </li>
-<li>各部件的功能如下：<br><strong>ALU</strong>：即运算器，进行算术、逻辑、移位、偏移地址计算等各种运算。<br><strong>FLAGS</strong>：存放运算结果的特征，如进借位、是否为零、奇偶性、溢出等。<br><strong>REGs</strong>：临时存放操作数、运算结果以及操作数地址等。<br><strong>EU控制部件</strong>：接收指令队列中的指令，进行指令译码、分析，形成各种控制信号，实现EU各个部件完成规定动作的控制。</li>
+<li>各部件的功能如下：<br><strong>ALU</strong>：即运算器，进行算术、逻辑、移位、偏移地址计算等各种运算。（指令执行）<br><strong>FLAGS</strong>：存放运算结果的特征，如进借位、是否为零、奇偶性、溢出等。（暂保存运算结果特征）<br><strong>REGs</strong>：临时存放操作数、运算结果以及操作数地址等。<br><strong>EU控制部件</strong>：接收指令队列中的指令，进行指令译码、分析，形成各种控制信号，实现EU各个部件完成规定动作的控制。</li>
 </ul>
 <h2 id="总线接口单元BIU"><a href="#总线接口单元BIU" class="headerlink" title="总线接口单元BIU"></a>总线接口单元BIU</h2><ul>
-<li>负责CPU与存储器、I/O接口之间的信息 （包括数据、地址、控制命令等）传送。 包括生成访问存储器所需的20位的物理地址、不断从内存中取指令并送到指令队列、以及配合EU对指定的内存单元或者外设端口进行数据存取操作。</li>
-<li>BIU由段寄存器、指令指针寄存器IP、指令队列、地址加法器以及总线控制逻辑组成。</li>
-<li>各部件的功能如下：<br><strong>总线控制逻辑</strong>：CPU与外总线之间的接口，实现指令、数据以及其他外部信息的存取。<br><strong>段寄存器</strong>：存放存储器段的段基地址。<br><strong>指令指针寄存器</strong>：存放当前要读取的指令的地址。它相当于前面介绍过的指令计数器PC。<br><strong>指令队列</strong>：8088和8086的指令 队列长度分别为4字节和6字节，为FIFO(先进先出)结构。当EU从指令队列中取走指令，指令队列出现空字节时，BIU就自动执行一次取指令周期，从内 存中取出后续的指令代码放入队列中。当EU需要数据时，BIU根据EU给出的地址，从指定的内存单元或外设中取出数据供EU使用。当运算结束时，BIU将 运算结果送入指定的内存单元或外设。当指令队列空时，EU就等待，直到有指令为止。若BIU正在取指令，EU发出访问总线的请求，则必须等BIU取指令完 毕后，该请求才能得到响应。一般情况下，程序顺序执行，当遇到跳转指令时，BIU就使指令队列复位，从新地址取出指令，并立即传给EU去执行。指令队列在 EU和BIU之间起到了“桥梁”的作用（或者说是一个指令“传送带”，源源不断地把指令从BIU送到EU），使BIU和EU可以并行工作。<br><strong>地址加法器</strong>：用来产生20位的物理地址。8086/8088的寄存器都是16位的，无法装载20位的物理地址。为了解决这个问题，8088/8086采用了将地址空间分段的方法，即将220（1MB） 的地址空间分为若干个64KB的段，然后用段基址加上段内偏移来访问物理存储器。8088/8086规定，分段总是从以16字节为单位的边界处开始，所以 段的起始地址最低四位总是0，即XXXX0H，这样每个段的基地址只需用16位便可表示。在不严格的情况下，也可以说段基址是段起始地址的高16位（若段 是以64KB为边界，则这种说法就是完全正确的）。由于段基址的这个特点，BIU在计算存储器的物理地址时，即是将段基址左移4位然后与段内偏移相加获 得。如下图所示。</li>
+<li><p>负责CPU与存储器、I/O接口之间的信息 （包括数据、地址、控制命令等）传送。 包括生成访问存储器所需的20位的物理地址、不断从内存中取指令并送到指令队列、以及配合EU对指定的内存单元或者外设端口进行数据存取操作。</p>
+</li>
+<li><p>BIU由段寄存器、指令指针寄存器IP、指令队列、地址加法器以及总线控制逻辑组成。</p>
+</li>
+<li><p>各部件的功能如下：<br><strong>总线控制逻辑</strong>：CPU与外总线之间的接口，实现指令、数据以及其他外部信息的存取。<br><strong>段寄存器</strong>：存放存储器段的段基地址。<br><strong>指令指针寄存器</strong>：存放当前要读取的指令的地址。它相当于前面介绍过的指令计数器PC。<br><strong>指令队列</strong>：8088和8086的指令 队列长度分别为4字节和6字节，为FIFO(先进先出)结构。当EU从指令队列中取走指令，指令队列出现空字节时，BIU就自动执行一次取指令周期，从内 存中取出后续的指令代码放入队列中。当EU需要数据时，BIU根据EU给出的地址，从指定的内存单元或外设中取出数据供EU使用。当运算结束时，BIU将 运算结果送入指定的内存单元或外设。当指令队列空时，EU就等待，直到有指令为止。若BIU正在取指令，EU发出访问总线的请求，则必须等BIU取指令完 毕后，该请求才能得到响应。一般情况下，程序顺序执行，当遇到跳转指令时，BIU就使指令队列复位，从新地址取出指令，并立即传给EU去执行。指令队列在 EU和BIU之间起到了“桥梁”的作用（或者说是一个指令“传送带”，源源不断地把指令从BIU送到EU），使BIU和EU可以并行工作。指令队列的存在是EU和BIU两个部分可同时进行，提高了CPU的效率，降低了对存储器存取速度的要求。<br><strong>地址加法器</strong>：用来产生20位的物理地址。8086/8088的寄存器都是16位的，无法装载20位的物理地址。为了解决这个问题，8088/8086采用了将地址空间分段的方法，即将220（1MB） 的地址空间分为若干个64KB的段，然后用段基址加上段内偏移来访问物理存储器。8088/8086规定，分段总是从以16字节为单位的边界处开始，所以 段的起始地址最低四位总是0，即XXXX0H，这样每个段的基地址只需用16位便可表示。在不严格的情况下，也可以说段基址是段起始地址的高16位（若段 是以64KB为边界，则这种说法就是完全正确的）。由于段基址的这个特点，BIU在计算存储器的物理地址时，即是将段基址左移4位然后与段内偏移相加获得（物理地址=段基地址左移4位+偏移地址）。</p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&amp;time=1512392400&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-SHi11S48O1lySWnrkjjyY7CPpts%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7836848563557888678&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址"></p>
+<p>物理地址生成举例：</p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&amp;time=1512392400&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-hNk8KjL%2FSIHIWmwLN4k7nqIvK6I%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7836914878310656711&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址生成"></p>
+<p>地址加法器将物理地址送入输入输出控制电路如下图所示。</p>
+<p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1512403221379&amp;di=750b87cd32eac42bf53d02314681c68c&amp;imgtype=0&amp;src=http%3A%2F%2Fpic.w2bc.com%2Fupload%2F201604%2F09%2F201604091548395525.jpg" alt="地址加法器"></p>
+</li>
 </ul>
-<h1 id="2-8088-8086CPU的内部寄存器"><a href="#2-8088-8086CPU的内部寄存器" class="headerlink" title="2.8088/8086CPU的内部寄存器"></a>2.8088/8086CPU的内部寄存器</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;CDN就是内容分布网络（Content Delivery Network），是构筑在现有Internet上的一种先进的流量分配网络。其<strong>目的</strong>是通过在现有的Internet中增加一层新的网络架构，将网站的内容发步到最接近用户的网络“边缘”，提高用户访问网站的响应速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;CDN有别于镜像，它比镜像更加智能，可以有这样一个比喻：<strong>CDN=镜像+缓存+整体负载均衡（GSLB）</strong>。因此，CDN可以明显提高Internet中信息流动的效率。目前CDN都<strong>以缓存网站中的静态数据为主</strong>。用户在从主站服务器请求到动态数据之后，再从CDN上下载静态数据，从而加速网页数据内容的下载速度。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常CDN要达到以下几个目标：</p>
-<ul>
-<li>可扩展。分为性能可扩展性和成本可扩展性。</li>
-<li>安全性。强调提供物理设备、网络、软件、数据和服务过程的安全性。</li>
-<li>可靠性、响应和执行。服务可用性能能够处理可能的故障和用户体验下降的问题，通过负载均衡及时提供网络的容错机制。</li>
-</ul>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;负载均衡（Load Balance）是对工作任务进行平衡、分摊到多个操作单元上执行，如图片服务器、应用服务器等，共同完成工作任务。它可以提高服务器响应速度及利用效率，避免软件或者硬件模块出现单点失效，解决网络拥塞问题，实现地理位置无关性，为用户提供较一致的访问质量。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;通常有三种负载均衡架构，分别是<strong>链路负载均衡、集群负载均衡、操作系统负载均衡</strong>。</p>
-<ul>
-<li>链路负载均衡就是通过DNS解析成不同的IP，然后根据IP访问不同的目标服务器实现的。这种方式的优点就是用户会直接访问目标服务器，速度会很快。但缺点是DNS都有缓存，一旦某台Web Server挂掉，就很难及时更新用户的域名解析结构。</li>
-<li>集群负载均衡一般分为硬件负载均衡和软件负载均衡。<strong>硬件负载均衡</strong>一般使用一台专门的硬件设备来转发请求，这台设备性能非常好，但是非常昂贵；<strong>软件负载均衡</strong>是使用最普遍的一种负载方式，特点是成本很低，但是一般一次访问请求要经过多次代理服务器，会增加网络延时。</li>
-<li>操作系统负载均衡就是利用操作系统级别的软中断或者硬件中断来达到负载均衡，如可以设置多队列网卡等来实现。</li>
-</ul>
-<hr>
-<p>参考自：《微型计算机原理与接口技术》（第三版）——冯博琴 吴宁<br>整理不易，转载请注明出处：<a href="http://blog.csdn.net/qq_40951128/article/details/78646248/" target="_blank" rel="noopener">Jacob的博客</a></p>
+<h1 id="2-8088-8086CPU的内部寄存器"><a href="#2-8088-8086CPU的内部寄存器" class="headerlink" title="2.8088/8086CPU的内部寄存器"></a>2.8088/8086CPU的内部寄存器</h1><p>&nbsp;&nbsp;8086/8088CPU内部共有14个16位寄存器。按其功能分为三大类，即通用寄存器（8个）、段寄存器（4个）、控制寄存器（2个）。如图所示：</p>
+<p><img src="http://hi.csdn.net/attachment/201010/3/0_128612503004cB.gif" alt="寄存器图"></p>
+<h2 id="nbsp-nbsp-nbsp-nbsp-具体的寄存器详解将在下次博客展开。"><a href="#nbsp-nbsp-nbsp-nbsp-具体的寄存器详解将在下次博客展开。" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 具体的寄存器详解将在下次博客展开。"></a>&nbsp;&nbsp;&nbsp;&nbsp; 具体的寄存器详解将在下次博客展开。</h2><p>整理不易，转载请注明出处：<a href="http://blog.csdn.net/qq_40951128/article/details/78646248/" target="_blank" rel="noopener">Jacob的博客</a></p>
 
       
     </div>
@@ -307,7 +305,7 @@
         <p><span>本文标题:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
         <p><span>发布时间:</span>2017-11-27, 15:18:25</p>
-        <p><span>最后更新:</span>2017-12-04, 20:15:21</p>
+        <p><span>最后更新:</span>2017-12-04, 21:20:32</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -323,8 +321,8 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/11/27/hello-world/">
-                    Hello World
+                <a href="/2017/11/30/深入Web请求过程/">
+                    深入Web请求过程
                 </a>
             </div>
         
@@ -337,7 +335,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#说明"><span class="toc-number">1.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-8088-8086CPU的内部结构"><span class="toc-number">2.</span> <span class="toc-text">1.8088/8086CPU的内部结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#执行单元EU"><span class="toc-number">2.1.</span> <span class="toc-text">执行单元EU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总线接口单元BIU"><span class="toc-number">2.2.</span> <span class="toc-text">总线接口单元BIU</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-8088-8086CPU的内部寄存器"><span class="toc-number">3.</span> <span class="toc-text">2.8088/8086CPU的内部寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-number">3.1.</span> <span class="toc-text">负载均衡</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#说明"><span class="toc-number">1.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-8088-8086CPU的内部结构"><span class="toc-number">2.</span> <span class="toc-text">1.8088/8086CPU的内部结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#执行单元EU"><span class="toc-number">2.1.</span> <span class="toc-text">执行单元EU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总线接口单元BIU"><span class="toc-number">2.2.</span> <span class="toc-text">总线接口单元BIU</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-8088-8086CPU的内部寄存器"><span class="toc-number">3.</span> <span class="toc-text">2.8088/8086CPU的内部寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nbsp-nbsp-nbsp-nbsp-具体的寄存器详解将在下次博客展开。"><span class="toc-number">3.1.</span> <span class="toc-text">     具体的寄存器详解将在下次博客展开。</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -412,7 +410,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/11/27/hello-world/" title="上一篇: Hello World">
+            <a href="/2017/11/30/深入Web请求过程/" title="上一篇: 深入Web请求过程">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -424,7 +422,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/28/My-first-blog/">'My-first-blog'</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
 
 
 
