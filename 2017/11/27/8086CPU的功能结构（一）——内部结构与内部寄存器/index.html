@@ -16,19 +16,19 @@
 
 
 <meta name="description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;n">
-<meta name="keywords" content="寄存器,微机原理,CPU">
+<meta name="keywords" content="微机原理,CPU,寄存器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta property="og:url" content="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/index.html">
 <meta property="og:site_name" content="Kingslee的博客">
 <meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://pan.baidu.com/disk/home?#list/vmode=list&path=%2F">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512388800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7835964177110966465&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 <meta property="og:updated_time" content="2017-12-04T12:15:21.794Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
-<meta name="twitter:image" content="https://pan.baidu.com/disk/home?#list/vmode=list&path=%2F">
+<meta name="twitter:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512388800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7835964177110966465&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -268,7 +268,7 @@
 
 </the></li>
 </ul>
-<p><img src="https://pan.baidu.com/disk/home?#list/vmode=list&amp;path=%2F" alt="总线"></p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&amp;time=1512388800&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7835964177110966465&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="总线"></p>
 <h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ul>
 <li>负责执行指令。EU在工作时不断地从指令队列取出指令代码，并完成指令所要求的操作。</li>
 <li>它由算术逻辑单元ALU、通用寄存器REGs、标志寄存器FLAGS和EU控制部件组成。 </li>
