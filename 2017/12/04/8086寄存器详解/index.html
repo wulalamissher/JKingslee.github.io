@@ -23,14 +23,14 @@
 <meta property="og:site_name" content="Kingslee的博客">
 <meta property="og:description" content="8088/8086寄存器详解笔记8088/8086寄存器认识8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。 分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack Pointer）,BP（基址指针寄存器Base Pointer）,SI（Sour">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&fm=214&gp=0.jpg">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/ec37b420915c35ca168238a446dc1564?fid=1502239572-250528-628861092157518&time=1512435600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-z5i20ytLQlyMiXLnbKZMXXwiWKM%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7848584259739325812&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 <meta property="og:image" content="http://images.cnitblog.com/i/626036/201407/081759095043499.png">
 <meta property="og:image" content="http://img4.imgtn.bdimg.com/it/u=1692549153,2996699051&fm=27&gp=0.jpg">
 <meta property="og:updated_time" content="2017-12-04T13:45:04.286Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（二）——内部寄存器详解">
 <meta name="twitter:description" content="8088/8086寄存器详解笔记8088/8086寄存器认识8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。 分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack Pointer）,BP（基址指针寄存器Base Pointer）,SI（Sour">
-<meta name="twitter:image" content="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&fm=214&gp=0.jpg">
+<meta name="twitter:image" content="https://thumbnail0.baidupcs.com/thumbnail/ec37b420915c35ca168238a446dc1564?fid=1502239572-250528-628861092157518&time=1512435600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-z5i20ytLQlyMiXLnbKZMXXwiWKM%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7848584259739325812&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -268,15 +268,16 @@
 <li><a id="more"></a>
 <the rest="" of="" contents文=""><br>这14个寄存器最好都可以记住，在之后的学习过程中会相对省力。记忆也需要技巧，笔者建议用英文来辅助记忆，不但不会搞混而且会更容易地记忆寄存器相对应的功能。</the></li>
 </ul>
-<p><img src="http://img0.imgtn.bdimg.com/it/u=45955955,2911437991&amp;fm=214&amp;gp=0.jpg" alt="寄存器图1"></p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/ec37b420915c35ca168238a446dc1564?fid=1502239572-250528-628861092157518&amp;time=1512435600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-z5i20ytLQlyMiXLnbKZMXXwiWKM%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7848584259739325812&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="寄存器图1"></p>
 <p>这14个寄存器分为三大类，通用寄存器，段寄存器，控制寄存器。下面对个各类别进行详细学习。</p>
 <h2 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h2><h3 id="AX：累加器"><a href="#AX：累加器" class="headerlink" title="AX：累加器"></a>AX：累加器</h3><h4 id="AX介绍："><a href="#AX介绍：" class="headerlink" title="AX介绍："></a>AX介绍：</h4><p>关于算数逻辑运算的操作数存放在这里，还有I/O指令以及外设接口信息也用它存放。AX 寄存器可以分为两个独立的 8 位的 AH （high8位）和 AL（low8位） 寄存器。</p>
 <h4 id="AX的特殊用途："><a href="#AX的特殊用途：" class="headerlink" title="AX的特殊用途："></a>AX的特殊用途：</h4><ul>
 <li><p>AX 寄存器具有的特殊用途是在使用<strong>DIV 和 MUL 指令</strong>时体现，DIV 在 8086 CPU 中是除法指令，而在使用除法的时候有两种情况，即除数可以是 8 位或者是 16 位的，而且<strong>除数</strong>可以存放在寄存器中或者是内存单元中，而至于<strong>被除数</strong>的话，应该由 AX 来代替。当除数是 8 位时，被除数一定会是 16 位的，并且默认是放在 AX 寄存器中，而当除数是 16 位时，被除数一定是 32 位的，因为 AX 是 16 位寄存器，自然，放不下32 位的被除数，所以，在这里还需要使用另一个 16 位寄存器 DX ，其中 DX 存放 32 位的被除数的高 16 位，而 AX 则存放 32 位的被除数的低 16 位，同时，AX 的作用还不仅仅是用来保存被除数的，当除法指令执行完成以后，如果除数是 8 位的，则在 AL 中会保存此次除法操作的商，而在AH 中则会保存此次除法操作的余数，当然，如果除数是 16 位的话，则 AX 中会保存本次除法操作的商，而 DX 则保存本次除法操作的余数。</p>
 </li>
-<li><p>上面介绍的是 AX 寄存器在除法操作中的应用，下面还需要介绍一下AX 在乘法操作中的应用，当使用 MUL 做乘法运算时，两个相乘的数要么都是 8 位，要么都是 16 位（位数要对齐），如果两个相乘的数都是 8 位的话，则一个默认是放在 AL 中，而另一个 8 位的乘数则位于其他的寄存器或者说是内存字节单元中，而如果两个相乘的数都是 16 位的话，则一个默认存放在 AX 中，另一个 16 位的则是位于 16 的寄存器中或者是某个内存字单元中。同时，当 MUL 指令执行完毕后，如果是 8 位的乘法运算，则默认乘法运算的结果是保存在 AX 中，而如果是 16 位的乘法运算的话，则默认乘法运算的结果有 32 位，其中，高位默认保存在 DX 中，而低位则默认保存在 AX 中。<br><img src="http://images.cnitblog.com/i/626036/201407/081759095043499.png" alt="AX"><br>###BX：基址寄存器</p>
+<li><p>上面介绍的是 AX 寄存器在除法操作中的应用，下面还需要介绍一下AX 在乘法操作中的应用，当使用 MUL 做乘法运算时，两个相乘的数要么都是 8 位，要么都是 16 位（位数要对齐），如果两个相乘的数都是 8 位的话，则一个默认是放在 AL 中，而另一个 8 位的乘数则位于其他的寄存器或者说是内存字节单元中，而如果两个相乘的数都是 16 位的话，则一个默认存放在 AX 中，另一个 16 位的则是位于 16 的寄存器中或者是某个内存字单元中。同时，当 MUL 指令执行完毕后，如果是 8 位的乘法运算，则默认乘法运算的结果是保存在 AX 中，而如果是 16 位的乘法运算的话，则默认乘法运算的结果有 32 位，其中，高位默认保存在 DX 中，而低位则默认保存在 AX 中。<br><img src="http://images.cnitblog.com/i/626036/201407/081759095043499.png" alt="AX"></p>
 </li>
 </ul>
+<p>###BX：基址寄存器</p>
 <h4 id="BX介绍："><a href="#BX介绍：" class="headerlink" title="BX介绍："></a>BX介绍：</h4><p>BX寄存器常用来存放访问内存时的基地址，BX 寄存器也可以分为两个独立的 8 位寄存器BH、BL。</p>
 <h4 id="BX的特殊用途："><a href="#BX的特殊用途：" class="headerlink" title="BX的特殊用途："></a>BX的特殊用途：</h4><p>除了暂存一般性数据的功能外，BX 作为通用寄存器的一种，BX 主要还是用于其专属功能 – 寻址（寻址物理内存地址）上，BX 寄存器中存放的数据一般是用来作为偏移地址使用的，何为偏移地址呢？</p>
 <p>既然是偏移地址的话，当然得有一个基地址了，而这个基地址其实就是段地址，这里就涉及到了段寄存器。段寄存器不在此处赘述，留在下面，上面提到BX 的主要功能是用在寻址上，那么，其是如何寻址的呢？不着急，我会专门写一篇博文来讨论寻址问题。</p>
