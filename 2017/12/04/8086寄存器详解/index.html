@@ -16,7 +16,7 @@
 
 
 <meta name="description" content="8088/8086寄存器详解笔记8088/8086寄存器认识8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。 分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack ">
-<meta name="keywords" content="微机原理,寄存器">
+<meta name="keywords" content="寄存器,微机原理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="8088&#x2F;8086CPU的功能结构（二）——内部寄存器详解">
 <meta property="og:url" content="http://yoursite.com/2017/12/04/8086寄存器详解/index.html">
@@ -26,7 +26,9 @@
 <meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/ec37b420915c35ca168238a446dc1564?fid=1502239572-250528-628861092157518&time=1512435600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-z5i20ytLQlyMiXLnbKZMXXwiWKM%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7848584259739325812&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 <meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/31969fc46ab9a496887b5a09e58fc262?fid=1502239572-250528-347035378073403&time=1512435600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-NzVm9jFvloUJ11ETXJB5XVqoesQ%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7848673321699685626&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 <meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/b90e60aa0bf2529fa899d877e53e1da3?fid=1502239572-250528-60706865192433&time=1512435600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-W0PMfjuMAvGlKZ0NEiZDd3ObkUE%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7848697720331728282&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
-<meta property="og:updated_time" content="2017-12-04T13:45:04.286Z">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/a2cafc17d37fc4615a83376432039fe9?fid=1502239572-250528-263578126154270&time=1512460800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-%2BW9%2BRGrCctJ2LMiSRhiyLbA6nY0%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7855436819335209805&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/e37a813ff45b083848f9a5663f06e052?fid=1502239572-250528-1090596848565783&time=1512460800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-UIzi3Gr9t%2BkDwbqEji7SDR53YRU%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7855454112762678330&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:updated_time" content="2017-12-05T01:59:01.113Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（二）——内部寄存器详解">
 <meta name="twitter:description" content="8088/8086寄存器详解笔记8088/8086寄存器认识8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。 分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack Pointer）,BP（基址指针寄存器Base Pointer）,SI（Sour">
@@ -270,18 +272,18 @@
 </ul>
 <p><img src="https://thumbnail0.baidupcs.com/thumbnail/ec37b420915c35ca168238a446dc1564?fid=1502239572-250528-628861092157518&amp;time=1512435600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-z5i20ytLQlyMiXLnbKZMXXwiWKM%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7848584259739325812&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="寄存器图1"></p>
 <p>这14个寄存器分为三大类，通用寄存器，段寄存器，控制寄存器。下面对个各类别进行详细学习。</p>
-<h2 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h2><h3 id="AX：累加器"><a href="#AX：累加器" class="headerlink" title="AX：累加器"></a>AX：累加器</h3><h4 id="AX介绍："><a href="#AX介绍：" class="headerlink" title="AX介绍："></a>AX介绍：</h4><p>关于算数逻辑运算的操作数存放在这里，还有I/O指令以及外设接口信息也用它存放。AX 寄存器可以分为两个独立的 8 位的 AH （high8位）和 AL（low8位） 寄存器。</p>
-<h4 id="AX的特殊用途："><a href="#AX的特殊用途：" class="headerlink" title="AX的特殊用途："></a>AX的特殊用途：</h4><ul>
+<h2 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h2><h3 id="数据寄存器：AX、BX、CX、DX"><a href="#数据寄存器：AX、BX、CX、DX" class="headerlink" title="数据寄存器：AX、BX、CX、DX"></a>数据寄存器：AX、BX、CX、DX</h3><h4 id="通用功能："><a href="#通用功能：" class="headerlink" title="通用功能："></a>通用功能：</h4><p>数据寄存器主要用来保存操作数或运算结果等信息，它们的存在节省了为存取操作数所需占用总线和访问存储器的时间。四个16位的数据寄存器均可分解成八个独立的8位寄存器，这八个8位的寄存器有各自的名称，均可独立存取。</p>
+<h4 id="AX：累加器"><a href="#AX：累加器" class="headerlink" title="AX：累加器"></a>AX：累加器</h4><h5 id="AX介绍："><a href="#AX介绍：" class="headerlink" title="AX介绍："></a>AX介绍：</h5><p>关于算数逻辑运算的操作数存放在这里，还有I/O指令以及外设接口信息也用它存放，使用得比较普遍。AX 寄存器可以分为两个独立的 8 位的 AH （high8位）和 AL（low8位） 寄存器。</p>
+<h5 id="AX的特殊用途："><a href="#AX的特殊用途：" class="headerlink" title="AX的特殊用途："></a>AX的特殊用途：</h5><ul>
 <li><p>AX 寄存器具有的特殊用途是在使用<strong>DIV 和 MUL 指令</strong>时体现，DIV 在 8086 CPU 中是除法指令，而在使用除法的时候有两种情况，即除数可以是 8 位或者是 16 位的，而且<strong>除数</strong>可以存放在寄存器中或者是内存单元中，而至于<strong>被除数</strong>的话，应该由 AX 来代替。当除数是 8 位时，被除数一定会是 16 位的，并且默认是放在 AX 寄存器中，而当除数是 16 位时，被除数一定是 32 位的，因为 AX 是 16 位寄存器，自然，放不下32 位的被除数，所以，在这里还需要使用另一个 16 位寄存器 DX ，其中 DX 存放 32 位的被除数的高 16 位，而 AX 则存放 32 位的被除数的低 16 位，同时，AX 的作用还不仅仅是用来保存被除数的，当除法指令执行完成以后，如果除数是 8 位的，则在 AL 中会保存此次除法操作的商，而在AH 中则会保存此次除法操作的余数，当然，如果除数是 16 位的话，则 AX 中会保存本次除法操作的商，而 DX 则保存本次除法操作的余数。</p>
 </li>
 <li><p>上面介绍的是 AX 寄存器在除法操作中的应用，下面还需要介绍一下AX 在乘法操作中的应用，当使用 MUL 做乘法运算时，两个相乘的数要么都是 8 位，要么都是 16 位（位数要对齐），如果两个相乘的数都是 8 位的话，则一个默认是放在 AL 中，而另一个 8 位的乘数则位于其他的寄存器或者说是内存字节单元中，而如果两个相乘的数都是 16 位的话，则一个默认存放在 AX 中，另一个 16 位的则是位于 16 的寄存器中或者是某个内存字单元中。同时，当 MUL 指令执行完毕后，如果是 8 位的乘法运算，则默认乘法运算的结果是保存在 AX 中，而如果是 16 位的乘法运算的话，则默认乘法运算的结果有 32 位，其中，高位默认保存在 DX 中，而低位则默认保存在 AX 中。<br><img src="https://thumbnail0.baidupcs.com/thumbnail/31969fc46ab9a496887b5a09e58fc262?fid=1502239572-250528-347035378073403&amp;time=1512435600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-NzVm9jFvloUJ11ETXJB5XVqoesQ%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7848673321699685626&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="AX"></p>
 </li>
 </ul>
-<h3 id="BX：基址寄存器"><a href="#BX：基址寄存器" class="headerlink" title="BX：基址寄存器"></a>BX：基址寄存器</h3><h4 id="BX介绍："><a href="#BX介绍：" class="headerlink" title="BX介绍："></a>BX介绍：</h4><p>BX寄存器常用来存放访问内存时的基地址，BX 寄存器也可以分为两个独立的 8 位寄存器BH、BL。</p>
-<h4 id="BX的特殊用途："><a href="#BX的特殊用途：" class="headerlink" title="BX的特殊用途："></a>BX的特殊用途：</h4><p>除了暂存一般性数据的功能外，BX 作为通用寄存器的一种，BX 主要还是用于其专属功能 – 寻址（寻址物理内存地址）上，BX 寄存器中存放的数据一般是用来作为偏移地址使用的，何为偏移地址呢？</p>
+<h4 id="BX：基址寄存器"><a href="#BX：基址寄存器" class="headerlink" title="BX：基址寄存器"></a>BX：基址寄存器</h4><h5 id="BX介绍："><a href="#BX介绍：" class="headerlink" title="BX介绍："></a>BX介绍：</h5><p>BX寄存器常用来存放访问内存时的基地址，它是四个数据存储器中唯一可以作为存储器指针使用的存储器，BX 寄存器也可以分为两个独立的 8 位寄存器BH、BL。</p>
+<h5 id="BX的特殊用途："><a href="#BX的特殊用途：" class="headerlink" title="BX的特殊用途："></a>BX的特殊用途：</h5><p>除了暂存一般性数据的功能外，BX 作为通用寄存器的一种，BX 主要还是用于其专属功能 – 寻址（寻址物理内存地址）上，BX 寄存器中存放的数据一般是用来作为偏移地址使用的，何为偏移地址呢？</p>
 <p>既然是偏移地址的话，当然得有一个基地址了，而这个基地址其实就是段地址，这里就涉及到了段寄存器。段寄存器不在此处赘述，留在下面，上面提到BX 的主要功能是用在寻址上，那么，其是如何寻址的呢？不着急，我会专门写一篇博文来讨论寻址问题。</p>
-<p>而这里，我只点一下，在 8086 CPU 中，CPU 是根据 &lt;段地址：偏移地址&gt; 来进行寻址操作的，</p>
-<p>而 BX 中存放的数据表示的是偏移地址的话，自然，便可以通过&lt;段地址：[BX]&gt; 的方式来完成寻址操作了。</p>
+<p>而这里，我只点一下，在 8086 CPU 中，CPU 是根据 &lt;段地址：偏移地址&gt; 来进行寻址操作的（所以BX通常与DS寄存器配对使用），而 BX 中存放的数据表示的是偏移地址的话，自然，便可以通过&lt;段地址：[BX]&gt; 的方式来完成寻址操作了。</p>
 <p>为了介绍 BX 在寻址当中的作用，下面我给出一副示意图：</p>
 <p>  <img src="https://thumbnail0.baidupcs.com/thumbnail/b90e60aa0bf2529fa899d877e53e1da3?fid=1502239572-250528-60706865192433&amp;time=1512435600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-W0PMfjuMAvGlKZ0NEiZDd3ObkUE%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7848697720331728282&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="BX寻址"></p>
 <p>上面的示意图表示：可以令 BX = 2000，然后通过 DS :[BX] 来访问到内存中段地址为 DS，且偏移量为 2000 的内存单元了。上面介绍的这种寻址方式算是 BX 在寻址中最最简单的应用了。</p>
@@ -289,6 +291,52 @@
 <p>​     MOV BX,5H</p>
 <p>​     MOV AH,11H</p>
 <p>​     MOV AH,[BX] ;设置 AX 的值为偏移地址为 BX 中的值时所<strong>代表</strong>的内存单元</p>
+<h4 id="CX-：计数器寄存器（帮忙计数的，loop指令之类的）"><a href="#CX-：计数器寄存器（帮忙计数的，loop指令之类的）" class="headerlink" title="CX ：计数器寄存器（帮忙计数的，loop指令之类的）"></a>CX ：计数器寄存器（帮忙计数的，loop指令之类的）</h4><h5 id="CX介绍："><a href="#CX介绍：" class="headerlink" title="CX介绍："></a>CX介绍：</h5><p>在字符串操作和循环操作时，用它来控制重复循环操作次数。在移位操作时，CL寄存器用于保存移位的位数。CX 寄存器可以分为两个独立的 8 位的 CH 和 CL 寄存器。</p>
+<h5 id="执行循环操作时的CX："><a href="#执行循环操作时的CX：" class="headerlink" title="执行循环操作时的CX："></a>执行循环操作时的CX：</h5><p>当在汇编指令中使用循环 LOOP 指令时，可以通过 CX 来指定需要循环的次数,而CPU 在每一次执行 LOOP 指令的时候，都会做两件事：一件就是令 CX = CX – 1，即令 CX 计数器自动减去 1；还有一件就是判断 CX 中的值，如果 CX 中的值为 0 则会跳出循环，而执行循环下面的指令，当然如果CX 中的值不为 0 ，则继续执行循环中的指令。</p>
+<h4 id="DX：数据寄存器"><a href="#DX：数据寄存器" class="headerlink" title="DX：数据寄存器"></a>DX：数据寄存器</h4><h5 id="DX介绍："><a href="#DX介绍：" class="headerlink" title="DX介绍："></a>DX介绍：</h5><p>在进行32位的乘除法操作时，用它存放被除数的高16位或余数，它也用于存放I/O端口地址。</p>
+<h5 id="DX用途："><a href="#DX用途：" class="headerlink" title="DX用途："></a>DX用途：</h5><p>和AX的特殊用途向应，即当在使用DIV指令进行除法运算时，如果除数为16位时，被除数将会是32位，而被除数的高16位就是存放在DX中，而且执行完DIV指令后，本次除法运算所产生的余数将会保存在DX中，同时，在执行MUL指令时，如果两个相乘的数都是16位的话，那么相乘后产生的结果显然需要32位来保存，而这32位的结果的高16位就是存放在DX寄存器中。</p>
+<h3 id="地址指针寄存器SP、BP"><a href="#地址指针寄存器SP、BP" class="headerlink" title="地址指针寄存器SP、BP"></a>地址指针寄存器SP、BP</h3><h4 id="SP：堆栈寄存器"><a href="#SP：堆栈寄存器" class="headerlink" title="SP：堆栈寄存器"></a>SP：堆栈寄存器</h4><p>SP在堆栈操作中用来存放栈顶偏移地址，永远指向堆栈的栈顶。（只有这一个目的）</p>
+<h4 id="BP：基址指针寄存器"><a href="#BP：基址指针寄存器" class="headerlink" title="BP：基址指针寄存器"></a>BP：基址指针寄存器</h4><p>一般常用来存放访问内存时的基地址，但它通常与SS寄存器配对使用来确定堆栈段中的存储单元地址。（比较：BX与DS，他们是用来确定数据段中的存储单元地址）。</p>
+<h3 id="变址寄存器SI、DI"><a href="#变址寄存器SI、DI" class="headerlink" title="变址寄存器SI、DI"></a>变址寄存器SI、DI</h3><h4 id="SI与DI："><a href="#SI与DI：" class="headerlink" title="SI与DI："></a>SI与DI：</h4><p>SI（源变址寄存器）和DI（目的变址寄存器）常在变址寻址中作为索引指正。在字符串操作中，规定由SI（Source Index）给出源指针，由DI（Destination Index）给出目的指针。当然，SI和DI也可作为一般存储器指针使用。</p>
+<h2 id="段寄存器"><a href="#段寄存器" class="headerlink" title="段寄存器"></a>段寄存器</h2><p>8086/8088 CPU依赖其内部的四个段寄存器实现寻址1M字节物理地址空间（20条地址线）。8086/8088把1M字节地址空间分成若干逻辑段，当前使用段的段值存放在段寄存器中。</p>
+<p>为了操作方便，存储器分为<strong>程序段</strong>、<strong>数据段</strong>、<strong>附加数据段</strong>、<strong>堆栈段</strong>四部分。</p>
+<ul>
+<li><p>程序段：用来存放程序指令代码。</p>
+</li>
+<li><p>数据段及附加数据段：用来存放数据和运算结果。</p>
+</li>
+<li><p>堆栈段：用来传递参数、保存数据和状态信息。<br>段寄存器：用来存放每个段的段基值,即段基址的高16位，每个段寄存器有特定功能，不能互换。通过修改段寄存器的内容，就可将这些段设置在存储器的任何位置上。这些段可以通过段寄存器的设置使之互相独立，也可有部分或完全的重叠。</p>
+<p>CPU对访问不同内存段所使用的段寄存器和相应的偏移地址来源有一些具体的约定。没有特殊要求记忆，所以此处暂不做具体说明了。</p>
+</li>
+</ul>
+<p>当前段：由CS、DS、SS、ES指向的段，如图：</p>
+<p> <img src="https://thumbnail0.baidupcs.com/thumbnail/a2cafc17d37fc4615a83376432039fe9?fid=1502239572-250528-263578126154270&amp;time=1512460800&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-%2BW9%2BRGrCctJ2LMiSRhiyLbA6nY0%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7855436819335209805&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="段寄存器"></p>
+<h4 id="CS-（Code-Segment）："><a href="#CS-（Code-Segment）：" class="headerlink" title="CS （Code Segment）："></a>CS （Code Segment）：</h4><p> 代码段用来存放程序的指令代码序列，CS用来存放当前代码段首址的高16位，即段基值。</p>
+<h4 id="DS-（Data-Segment）："><a href="#DS-（Data-Segment）：" class="headerlink" title="DS （Data Segment）："></a>DS （Data Segment）：</h4><p> 数据段用来存放程序的有关数据，DS用来存放当前数据段的段基值。</p>
+<h4 id="ES-Extra-Segment-："><a href="#ES-Extra-Segment-：" class="headerlink" title="ES (Extra Segment)："></a>ES (Extra Segment)：</h4><p> 附加段用来存放运算结果或辅助数据，ES用来存放当前附加段的段基值。</p>
+<h4 id="SS-（Stack-Segment）："><a href="#SS-（Stack-Segment）：" class="headerlink" title="SS （Stack Segment）："></a>SS （Stack Segment）：</h4><p>堆栈段用来存放按后进先出顺序存取的信息，SS用来存放当前堆栈段的段基值。</p>
+<h2 id="控制寄存器"><a href="#控制寄存器" class="headerlink" title="控制寄存器"></a>控制寄存器</h2><h4 id="IP：指令指针寄存器"><a href="#IP：指令指针寄存器" class="headerlink" title="IP：指令指针寄存器"></a>IP：指令指针寄存器</h4><p>​     8086/8088 CPU中的指令指针IP（Instruction Pointer）给出接着要执行的指令在代码段中的偏移，通过CS:IP即可访问CPU要执行的下一条指令。当CPU从CS段中偏移地址为IP的内存单元中取出指令代码的一个字节后，IP自动加1，指向指令代码的下一个字节。IP寄存器是一个专用寄存器，用户程序不能直接访问IP。</p>
+<h4 id="FLAGS：标志寄存器"><a href="#FLAGS：标志寄存器" class="headerlink" title="FLAGS：标志寄存器"></a>FLAGS：标志寄存器</h4><p>​     FLAGS称为标志寄存器或程序状态字（PSW），虽然它是16位，但实际包含了9个标志，主要用于反映处理器的状态和运算结果的某些特征。各标志在标志寄存器中的位置如下所示。</p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/e37a813ff45b083848f9a5663f06e052?fid=1502239572-250528-1090596848565783&amp;time=1512460800&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-UIzi3Gr9t%2BkDwbqEji7SDR53YRU%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7855454112762678330&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="标志寄存器"></p>
+<p>​       标识寄存器又称程序状态寄存器（Program Status Word）。它是一个存放<strong>状态标志位</strong>、<strong>控制标志位</strong>和<strong>系统标志位</strong>的寄存器。（<em>注意这与课本上讲的有些许不一致，课本上将控制标志位和系统标志位合并为了控制标志位，并不考虑IOPL域。</em>）</p>
+<h5 id="状态标志位（Status-Flags）"><a href="#状态标志位（Status-Flags）" class="headerlink" title="状态标志位（Status Flags）"></a><strong>状态标志位（Status Flags）</strong></h5><p>用来记录程序中运行结果的状态信息，它们是根据有关指令的运行结果由CPU自动设置的。由于这些状态信息往往作为后续条件转移指令的转移控制条件，所以为条件码。它包括以下6位：</p>
+<ul>
+<li>进位标志（carry flag, CF），记录运算时从最高有效位产生的进位值。例如，执行加法指令时，最高有效位有进位时置1，否则置0。</li>
+<li>奇偶标志位（parity flag，PF），用来为机器中传送信息时可能产生的代码出错情况提供检验条件。当结果操作数中1的个数为偶数时置1，否则置0。</li>
+<li>辅助进位标志（auxiliary carry flag, AF），记录运算时第3位（半个字节）产生的进位值。例如，执行加法指令第3位有进位时置1，否则置0。</li>
+<li>溢出标志（overflow flag, OF），在运算过程中，如操作数超过了机器能表示的范围称为成为溢出。此时OF置为1，否则置0。</li>
+<li>符号标志（sign flag, SF），记录运算结果的符号，结果为负时置1，否则置0。</li>
+<li>零标志（zero flag, ZF），运算结果为0时ZF位置1，否则置0。</li>
+</ul>
+<h5 id="控制标志位"><a href="#控制标志位" class="headerlink" title="控制标志位"></a><strong>控制标志位</strong></h5><ul>
+<li>方向标志（direction flag， DF），在串控制指令（MOVS, CMPS, SCAS, LODS以及STOS）中控制处理信息的方向用。当DF位为1时，每次操作后使变址寄存器SI和DI减小，这样就使串处理从高地址向低地址方向处理。当DF位为0时，则使SI和DI增大，使串处理从低地址向高地址方向处理。</li>
+</ul>
+<h5 id="系统标志位以及IOPL域（System-Flags-and-IOPL-Field）"><a href="#系统标志位以及IOPL域（System-Flags-and-IOPL-Field）" class="headerlink" title="系统标志位以及IOPL域（System Flags and IOPL Field）"></a><strong>系统标志位以及IOPL域（System Flags and IOPL Field）</strong></h5><p>可以用于I/O、可屏蔽中断、程序调试、任务切换和系统工作方式等的控制。一般应用程序不必关心或修改这些位的状态，只有系统程序员或需要编制底层I/O设备控制等程序时才需要访问其中的有关位。</p>
+<ul>
+<li>陷阱标志（trap flag, TF），用于调试时的单步方式操作。当TF位为1时，每条指令执行完后产生陷阱，由系统控制计算机；当TF位为0时，CPU正常工作，不产生陷阱。</li>
+<li>中断标志（interrupt flag, IF），当IF位为1时，允许CPU响应可屏蔽中断请求，否则关闭中断。IF的状态对不可屏蔽中断的及内部中断没有影响。</li>
+<li>I/O特权级（I/O privilege level, IOPL），在保护模式下，用于控制对I/O地址空间的访问。 （<em> 课本未提及IOPL域相关的标志，此处只提及一个了解即可</em>）</li>
+</ul>
 
       
     </div>
@@ -300,7 +348,7 @@
         <p><span>本文标题:</span><a href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
         <p><span>发布时间:</span>2017-12-04, 17:30:25</p>
-        <p><span>最后更新:</span>2017-12-04, 21:45:04</p>
+        <p><span>最后更新:</span>2017-12-05, 09:59:01</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/12/04/8086寄存器详解/" title="8088/8086CPU的功能结构（二）——内部寄存器详解">http://yoursite.com/2017/12/04/8086寄存器详解/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/12/04/8086寄存器详解/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -330,7 +378,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#8088-8086寄存器详解笔记"><span class="toc-number">1.</span> <span class="toc-text">8088/8086寄存器详解笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#8088-8086寄存器认识"><span class="toc-number">1.1.</span> <span class="toc-text">8088/8086寄存器认识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通用寄存器"><span class="toc-number">1.2.</span> <span class="toc-text">通用寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AX：累加器"><span class="toc-number">1.2.1.</span> <span class="toc-text">AX：累加器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AX介绍："><span class="toc-number">1.2.1.1.</span> <span class="toc-text">AX介绍：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AX的特殊用途："><span class="toc-number">1.2.1.2.</span> <span class="toc-text">AX的特殊用途：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BX：基址寄存器"><span class="toc-number">1.2.2.</span> <span class="toc-text">BX：基址寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BX介绍："><span class="toc-number">1.2.2.1.</span> <span class="toc-text">BX介绍：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BX的特殊用途："><span class="toc-number">1.2.2.2.</span> <span class="toc-text">BX的特殊用途：</span></a></li></ol></li></ol></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#8088-8086寄存器详解笔记"><span class="toc-number">1.</span> <span class="toc-text">8088/8086寄存器详解笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#8088-8086寄存器认识"><span class="toc-number">1.1.</span> <span class="toc-text">8088/8086寄存器认识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通用寄存器"><span class="toc-number">1.2.</span> <span class="toc-text">通用寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据寄存器：AX、BX、CX、DX"><span class="toc-number">1.2.1.</span> <span class="toc-text">数据寄存器：AX、BX、CX、DX</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#通用功能："><span class="toc-number">1.2.1.1.</span> <span class="toc-text">通用功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AX：累加器"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">AX：累加器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#AX介绍："><span class="toc-number">1.2.1.2.1.</span> <span class="toc-text">AX介绍：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AX的特殊用途："><span class="toc-number">1.2.1.2.2.</span> <span class="toc-text">AX的特殊用途：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BX：基址寄存器"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">BX：基址寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#BX介绍："><span class="toc-number">1.2.1.3.1.</span> <span class="toc-text">BX介绍：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#BX的特殊用途："><span class="toc-number">1.2.1.3.2.</span> <span class="toc-text">BX的特殊用途：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CX-：计数器寄存器（帮忙计数的，loop指令之类的）"><span class="toc-number">1.2.1.4.</span> <span class="toc-text">CX ：计数器寄存器（帮忙计数的，loop指令之类的）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#CX介绍："><span class="toc-number">1.2.1.4.1.</span> <span class="toc-text">CX介绍：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#执行循环操作时的CX："><span class="toc-number">1.2.1.4.2.</span> <span class="toc-text">执行循环操作时的CX：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DX：数据寄存器"><span class="toc-number">1.2.1.5.</span> <span class="toc-text">DX：数据寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#DX介绍："><span class="toc-number">1.2.1.5.1.</span> <span class="toc-text">DX介绍：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#DX用途："><span class="toc-number">1.2.1.5.2.</span> <span class="toc-text">DX用途：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地址指针寄存器SP、BP"><span class="toc-number">1.2.2.</span> <span class="toc-text">地址指针寄存器SP、BP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SP：堆栈寄存器"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">SP：堆栈寄存器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BP：基址指针寄存器"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">BP：基址指针寄存器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变址寄存器SI、DI"><span class="toc-number">1.2.3.</span> <span class="toc-text">变址寄存器SI、DI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SI与DI："><span class="toc-number">1.2.3.1.</span> <span class="toc-text">SI与DI：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#段寄存器"><span class="toc-number">1.3.</span> <span class="toc-text">段寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CS-（Code-Segment）："><span class="toc-number">1.3.0.1.</span> <span class="toc-text">CS （Code Segment）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DS-（Data-Segment）："><span class="toc-number">1.3.0.2.</span> <span class="toc-text">DS （Data Segment）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ES-Extra-Segment-："><span class="toc-number">1.3.0.3.</span> <span class="toc-text">ES (Extra Segment)：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SS-（Stack-Segment）："><span class="toc-number">1.3.0.4.</span> <span class="toc-text">SS （Stack Segment）：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#控制寄存器"><span class="toc-number">1.4.</span> <span class="toc-text">控制寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#IP：指令指针寄存器"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">IP：指令指针寄存器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FLAGS：标志寄存器"><span class="toc-number">1.4.0.2.</span> <span class="toc-text">FLAGS：标志寄存器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#状态标志位（Status-Flags）"><span class="toc-number">1.4.0.2.1.</span> <span class="toc-text">状态标志位（Status Flags）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#控制标志位"><span class="toc-number">1.4.0.2.2.</span> <span class="toc-text">控制标志位</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#系统标志位以及IOPL域（System-Flags-and-IOPL-Field）"><span class="toc-number">1.4.0.2.3.</span> <span class="toc-text">系统标志位以及IOPL域（System Flags and IOPL Field）</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
         
     </div>
     <style>
