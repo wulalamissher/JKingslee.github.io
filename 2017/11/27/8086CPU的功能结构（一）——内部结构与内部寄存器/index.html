@@ -16,23 +16,23 @@
 
 
 <meta name="description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;n">
-<meta name="keywords" content="寄存器,微机原理,CPU">
+<meta name="keywords" content="微机原理,CPU,寄存器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta property="og:url" content="http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/index.html">
 <meta property="og:site_name" content="Kingslee的博客">
 <meta property="og:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512388800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7835964177110966465&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
-<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&time=1512392400&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-SHi11S48O1lySWnrkjjyY7CPpts%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7836848563557888678&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
-<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&time=1512392400&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-hNk8KjL%2FSIHIWmwLN4k7nqIvK6I%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7836914878310656711&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512471600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-wBASDbfG5LB6DN48OvxSv1rTPJ4%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7857973249005276865&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&time=1512471600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-DmkVubPvZHxHTGaSTiQx9UCpSNo%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7857943737774274752&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta property="og:image" content="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&time=1512471600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-84SsDrCiU%2FQBW2bslXXtWp%2BoNtM%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7857891986070235760&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 <meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1512403221379&di=750b87cd32eac42bf53d02314681c68c&imgtype=0&src=http%3A%2F%2Fpic.w2bc.com%2Fupload%2F201604%2F09%2F201604091548395525.jpg">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201010/3/0_128612503004cB.gif">
-<meta property="og:updated_time" content="2017-12-04T13:44:43.924Z">
+<meta property="og:updated_time" content="2017-12-05T11:27:42.973Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8088&#x2F;8086CPU的功能结构（一）——内部结构与内部寄存器">
 <meta name="twitter:description" content="说明&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在很久之前就想自己开个博客，一直没有付诸实际行动，现在终于开始行动了。这篇博客是在微机原理课下做的 学习笔记，会有后续。在兴趣中学习才更有动力。 1.8088/8086CPU的内部结构&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要是由执行单元EU和总线接口单元BIU两大部分构成。">
-<meta name="twitter:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512388800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7835964177110966465&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
+<meta name="twitter:image" content="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&time=1512471600&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-wBASDbfG5LB6DN48OvxSv1rTPJ4%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=7857973249005276865&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -272,7 +272,7 @@
 
 </the></li>
 </ul>
-<p><img src="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&amp;time=1512388800&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-fVCNYx%2BGFve0Tnzlt3KV98PEDn8%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7835964177110966465&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="总线"></p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/a7f56497dc036e4cae897c69279b3e54?fid=1502239572-250528-565815400582888&amp;time=1512471600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-wBASDbfG5LB6DN48OvxSv1rTPJ4%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7857973249005276865&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="总线"></p>
 <h2 id="执行单元EU"><a href="#执行单元EU" class="headerlink" title="执行单元EU"></a>执行单元EU</h2><ul>
 <li>负责执行指令。EU在工作时不断地从指令队列取出指令代码，并完成指令所要求的操作。</li>
 <li>它由算术逻辑单元ALU、通用寄存器REGs、标志寄存器FLAGS和EU控制部件组成。 </li>
@@ -284,9 +284,9 @@
 <li><p>BIU由段寄存器、指令指针寄存器IP、指令队列、地址加法器以及总线控制逻辑组成。</p>
 </li>
 <li><p>各部件的功能如下：<br><strong>总线控制逻辑</strong>：CPU与外总线之间的接口，实现指令、数据以及其他外部信息的存取。<br><strong>段寄存器</strong>：存放存储器段的段基地址。<br><strong>指令指针寄存器</strong>：存放当前要读取的指令的地址。它相当于前面介绍过的指令计数器PC。<br><strong>指令队列</strong>：8088和8086的指令 队列长度分别为4字节和6字节，为FIFO(先进先出)结构。当EU从指令队列中取走指令，指令队列出现空字节时，BIU就自动执行一次取指令周期，从内 存中取出后续的指令代码放入队列中。当EU需要数据时，BIU根据EU给出的地址，从指定的内存单元或外设中取出数据供EU使用。当运算结束时，BIU将 运算结果送入指定的内存单元或外设。当指令队列空时，EU就等待，直到有指令为止。若BIU正在取指令，EU发出访问总线的请求，则必须等BIU取指令完 毕后，该请求才能得到响应。一般情况下，程序顺序执行，当遇到跳转指令时，BIU就使指令队列复位，从新地址取出指令，并立即传给EU去执行。指令队列在 EU和BIU之间起到了“桥梁”的作用（或者说是一个指令“传送带”，源源不断地把指令从BIU送到EU），使BIU和EU可以并行工作。指令队列的存在是EU和BIU两个部分可同时进行，提高了CPU的效率，降低了对存储器存取速度的要求。<br><strong>地址加法器</strong>：用来产生20位的物理地址。8086/8088的寄存器都是16位的，无法装载20位的物理地址。为了解决这个问题，8088/8086采用了将地址空间分段的方法，即将220（1MB） 的地址空间分为若干个64KB的段，然后用段基址加上段内偏移来访问物理存储器。8088/8086规定，分段总是从以16字节为单位的边界处开始，所以 段的起始地址最低四位总是0，即XXXX0H，这样每个段的基地址只需用16位便可表示。在不严格的情况下，也可以说段基址是段起始地址的高16位（若段 是以64KB为边界，则这种说法就是完全正确的）。由于段基址的这个特点，BIU在计算存储器的物理地址时，即是将段基址左移4位然后与段内偏移相加获得（物理地址=段基地址左移4位+偏移地址）。</p>
-<p><img src="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&amp;time=1512392400&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-SHi11S48O1lySWnrkjjyY7CPpts%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7836848563557888678&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址"></p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&amp;time=1512471600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-DmkVubPvZHxHTGaSTiQx9UCpSNo%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7857943737774274752&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址"></p>
 <p>物理地址生成举例：</p>
-<p><img src="https://thumbnail0.baidupcs.com/thumbnail/55144e4438c9dc4f3a12b45c13255ca9?fid=1502239572-250528-435076832015566&amp;time=1512392400&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-hNk8KjL%2FSIHIWmwLN4k7nqIvK6I%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7836914878310656711&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址生成"></p>
+<p><img src="https://thumbnail0.baidupcs.com/thumbnail/5adb6d2b599a19fcd2f3a7efc2269ff6?fid=1502239572-250528-673133066158649&amp;time=1512471600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-84SsDrCiU%2FQBW2bslXXtWp%2BoNtM%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=7857891986070235760&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100&amp;vuk=-&amp;ft=video" alt="物理地址生成"></p>
 <p>地址加法器将物理地址送入输入输出控制电路如下图所示。</p>
 <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1512403221379&amp;di=750b87cd32eac42bf53d02314681c68c&amp;imgtype=0&amp;src=http%3A%2F%2Fpic.w2bc.com%2Fupload%2F201604%2F09%2F201604091548395525.jpg" alt="地址加法器"></p>
 </li>
@@ -305,7 +305,7 @@
         <p><span>本文标题:</span><a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
         <p><span>发布时间:</span>2017-11-27, 15:18:25</p>
-        <p><span>最后更新:</span>2017-12-04, 21:44:43</p>
+        <p><span>最后更新:</span>2017-12-05, 19:27:42</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="8088/8086CPU的功能结构（一）——内部结构与内部寄存器">http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
