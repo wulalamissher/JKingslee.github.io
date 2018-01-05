@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="8088/8086地址分段与寻址方式一、明确地址分段的原因​     因为在8086中CPU的地址线是20位，那么实际可用的最大物理地址空间是1MB,地址范围为00000H-0FFFFFH，内存中每个字节单元有唯一的20位物理地址，CPU存取内存中的程序和数据必须使用20位物理地址。">
+<meta name="keywords" content="汇编,寻址,笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8088&#x2F;8086地址分段与寻址方式">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/8086地址分段与寻址方式/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="8088/8086地址分段与寻址方式一、明确地址分段的原因​     因为在8086中CPU的地址线是20位，那么实际可用的最大物理地址空间是1MB,地址范围为00000H-0FFFFFH，内存中每个字节单元有唯一的20位物理地址，CPU存取内存中的程序和数据必须使用20位物理地址。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://s4.sinaimg.cn/large/6d8df7d04ad384ffbb313&690">
+<meta property="og:updated_time" content="2018-01-05T09:28:33.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8088&#x2F;8086地址分段与寻址方式">
+<meta name="twitter:description" content="8088/8086地址分段与寻址方式一、明确地址分段的原因​     因为在8086中CPU的地址线是20位，那么实际可用的最大物理地址空间是1MB,地址范围为00000H-0FFFFFH，内存中每个字节单元有唯一的20位物理地址，CPU存取内存中的程序和数据必须使用20位物理地址。">
+<meta name="twitter:image" content="http://s4.sinaimg.cn/large/6d8df7d04ad384ffbb313&690">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>8088/8086地址分段与寻址方式 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+</nav>
+      <div class="body-wrap"><article id="post-8086地址分段与寻址方式" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/05/8086地址分段与寻址方式/" class="article-date">
+      <time datetime="2017-01-04T16:00:25.000Z" itemprop="datePublished">2017-01-05</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      8088/8086地址分段与寻址方式
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/日志/">日志</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寻址/">寻址</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/汇编/">汇编</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="8088-8086地址分段与寻址方式"><a href="#8088-8086地址分段与寻址方式" class="headerlink" title="8088/8086地址分段与寻址方式"></a>8088/8086地址分段与寻址方式</h1><h2 id="一、明确地址分段的原因"><a href="#一、明确地址分段的原因" class="headerlink" title="一、明确地址分段的原因"></a>一、明确地址分段的原因</h2><p>​     因为在8086中CPU的地址线是20位，那么实际可用的最大物理地址空间是1MB,地址范围为00000H-0FFFFFH，内存中每个字节单元有唯一的20位物理地址，CPU存取内存中的程序和数据必须使用20位物理地址。</p>
+<p><excerpt in="" index=""> </excerpt></p>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents文="">
+
+</the></li>
+</ul>
+<p><strong><code>问题：8086/8088CPU访问1MB空间的内存必须有20位地址，而其内部与地址有关的寄存器均为16位的，只能处理16位地址，对内存的直接寻址范围最大只能达64KB。</code></strong><br>​     <code>8086/8088CPU应如何提供20位地址，以寻址1MB内存？</code><br><strong><code>解决方法：存储器地址分段</code></strong></p>
+<h4 id="存储器的分段"><a href="#存储器的分段" class="headerlink" title="存储器的分段"></a><strong>存储器的分段</strong></h4><p>把1MB内存划分成若干个存储区域，每个区域称为一个逻辑段(每个段都在一个连续的存储区域内，容量最大64KB）。</p>
+<p>但是对于段的首地址不是随意乱取，通常都以“小段的起始地址为主”。“小段”即是在物理地址中从00000H开始，每16个字节而划分的，那么整个物理地址空间就可以划分为64K个小段，且首地址的最后四位均为0（用二进制表示时），所以是16的倍数。</p>
+<p>逻辑段特征是：20位段起始地址的最低4位为0（用16进制表示为××××0H）。暂时忽略段起始地址的低4位，其高16位（称段基址）可存放在16位的寄存器中。段基址可确定某个段在内存中的起始位置，而段中某个单元在该段中的位置则可由该单元在段内相对于段起始地址的偏移量（称偏移地址，也为16位）来决定。也就是说，内存中某单元的位置可用16位的段基址和16位的偏移地址确定。</p>
+<p>   进行分段后，段与段之间就会有重叠、相邻、不会相干的现象产生。</p>
+<p>[一般物理地址= 段首地址*16+段内偏移地址。][ 当CPU访问存储单元时，先由段寄存器提供存储单元所在段的段基址。然后段基址被左移4位（乘16），即恢复段起始地址，再与待访问存储单元的偏移地址相加，可得到该单元的20位物理地址。这样一来，CPU寻址范围可达1MB。]</p>
+<p>前者为物理地址，后者断首地址：偏移地址为逻辑地址。所以<strong>一个物理地址可能对应多个逻辑地址</strong>的表示。</p>
+<h4 id="段的分配"><a href="#段的分配" class="headerlink" title="段的分配"></a><strong>段的分配</strong></h4><p>在对存储器进行操作时，内存一般可分成4个段，分别称为代码段、数据段、堆栈段和附加数据段，每个段存放不同性质的数据，进行不同的操作。<br>​       代码段：存放指令。<br>​       堆栈段：程序的堆栈区（子程序调用、系统功能调用、中断处理等操作使用，是按“先进后出”原则访问的特殊存储区域）或作为临时数据存储区。<br>​       数据段：存放程序所使用的数据。<br>​       附加数据段：辅助的数据区（串操作指令使用）。<br>​       4个逻辑段的段基址分别放在相应的代码段寄存器CS、数据段寄存器DS、堆栈段寄存器SS和附加段寄存器ES中，由这4个段寄存器来指明每个段在内存中的起始地址。<br>​    （举例）假设当前有效的代码段、数据段、堆栈段、附加段的段地址分别为1055H、250AH、8FFBH、EFF0H，则各段在内存中的分配情况如下图所示。  </p>
+<p><img src="http://s4.sinaimg.cn/large/6d8df7d04ad384ffbb313&amp;690" alt="四个段在内存中的分配"></p>
+<p>4个段可分配在1MB的任何地方，段与段间可重叠或不重叠、可连续排列、断续排列。<br>尽管CPU在某一时刻最多只能同时访问4个段，但用户在程序中可根据需要定义多个这样的段。若CPU要访问4个段以外的其他段，只要改变相应段寄存器的内容即可。</p>
+<h4 id="段超越（段重设）"><a href="#段超越（段重设）" class="headerlink" title="段超越（段重设）"></a>段超越（段重设）</h4><p>段超越前缀用来改变默认段寻址，通常内址寻址是数据段或者堆栈段，但可以在指令前面加上段超越前缀，就可以访问到其他段内的数据。</p>
+<p> 8088/8086对段寄存器的使用存在着约定</p>
+<p>详情可以参考课本P47页表2-3 （没找到描述很全的图，就不放了）</p>
+<h2 id="二、寻址方式"><a href="#二、寻址方式" class="headerlink" title="二、寻址方式"></a>二、寻址方式</h2><p>一般操作码在相应的机器指令体系中有相关的表示，但是操作数的存储就会不同了。</p>
+<p>操作数存储在如下地方：</p>
+<p>一、直接在汇编代码中：这种寻址方式就是立即数寻址   mov ax, 1234H</p>
+<p>二、存放在寄存器中：这种寻址方式就是寄存器寻址  mov ax,bx</p>
+<p>三、存放在内存中：很多</p>
+<h4 id="寻址方式的简单举例：（以源操作数的寻址为例）"><a href="#寻址方式的简单举例：（以源操作数的寻址为例）" class="headerlink" title="寻址方式的简单举例：（以源操作数的寻址为例）"></a>寻址方式的简单举例：（以源操作数的寻址为例）</h4><p>1、立即数寻址  mov ax，1234H</p>
+<p>2、寄存器寻址 mov ax，bx</p>
+<p>3、直接寻址    mov ax，【1234H】  （ax） = （ds*16+1234H）</p>
+<p>4、寄存器间接寻址</p>
+<p>mov  ax，【bx】  （ax） = （ds*16+bx）</p>
+<p>mov  ax，【BP】 （ax）=（ss*16+bp）</p>
+<p>因为bp的默认是通过ss来寻址，不过也可以通过段地址前缀来进行强加了</p>
+<p>mov ax，ds:[BP]  (ax) = (ds*16+bp)</p>
+<p>5、寄存器相对寻址</p>
+<p>mov ax,[bx+1234H]  (ax) = (ds*16+bx+1234H)</p>
+<p>也可以表示为</p>
+<p>mov ax，1234H【bx】</p>
+<p>同4，也存在这样的关系</p>
+<p>6、基址变址寻址</p>
+<p>mov ax，【bx+si】 （ax）= （ds*16+bx+si） <bx是基址寄存器，默认是和ds合用></bx是基址寄存器，默认是和ds合用></p>
+<p>也可以表示为</p>
+<p>mov ax，【bx】【si】或者是mov ax，【si】【bx】</p>
+<p>7、相对基址变址寻址</p>
+<p>mov ax，【bx+si+1234H】 （ax）=（ds*16+bx+si+1234H）</p>
+<p>因为对于其中的很多寄存器都是可以变换的，所以不在这里一一列举</p>
+<p>但是对于以上7中寻址方式到底应该在什么情况下进行使用还需要进一步的学习。</p>
+<h4 id="寻址方式的详细说明和举例：（以源操作数的寻址为例）"><a href="#寻址方式的详细说明和举例：（以源操作数的寻址为例）" class="headerlink" title="寻址方式的详细说明和举例：（以源操作数的寻址为例）"></a>寻址方式的详细说明和举例：（以源操作数的寻址为例）</h4><p>汇编代码是由两部分组成：操作码+操作数，既然有操作数的参与，那么对于操作数必然需要存储。</p>
+<p>在计算机中，对于操作数的存取至少有两种方式：寄存器和存储器，那么相对而言就产生了各种寻找操作数的方式。</p>
+<h5 id="1、立即寻址方式"><a href="#1、立即寻址方式" class="headerlink" title="1、立即寻址方式"></a>1、立即寻址方式</h5><p>操作数就包含在指令代码中，它作为指令的一部分跟在操作码后放在代码段(CS)中。</p>
+<p>这种操作数被称作立即数，立即数可以是8位的也可以是16位的。</p>
+<p>如果立即数是16位的就按照“高高低低”的原则存储&lt;主要是针对寄存器，与存储单元的大端和小端没有关系&gt;</p>
+<p>指令示例：mov ax,1234H<h代表的是16位></h代表的是16位></p>
+<p>AH = 12， AL=34</p>
+<p>但是汇编指令在代码段中的存储方式需要依据存储器的大小端格式来定。</p>
+<h5 id="2、寄存器寻址方式"><a href="#2、寄存器寻址方式" class="headerlink" title="2、寄存器寻址方式"></a>2、寄存器寻址方式</h5><p>操作数放在CPU内部的寄存器中，指令指定寄存器的编号。</p>
+<p>对于16位的操作数，寄存器可以如下：</p>
+<p>数据寄存器(AX/BX/CX/DX)</p>
+<p>地址寄存器(DI/SI)</p>
+<p>指针寄存器(SP/BP)</p>
+<p>对于8位的操作数，可以是第一节的8个8位的寄存器</p>
+<p>因为操作数在寄存器中，不需要占有系统总线，访问速度快。</p>
+<p>指令示例：mov ax,bx</p>
+<p>如果执行前：(AX) = 3064H,(BX)=1234H，指令执行后</p>
+<p>(AX)= 1234H</p>
+<h5 id="3、直接寻址方式"><a href="#3、直接寻址方式" class="headerlink" title="3、直接寻址方式"></a>3、直接寻址方式</h5><p>指令直接包含操作数的有效地址(偏移地址)</p>
+<p>操作数的有效地址一般存储在代码段中，操作数放在数据段中，默认的是ds段</p>
+<p>所以操作数的地址由DS加上偏移地址得到有效地址，取出有效地址中的数据进行操作。</p>
+<p>指令示例：</p>
+<p>MOV AX,[1234H]</p>
+<p>假设DS = 4567H，内存中(468A4H) = 0001H，那么有效地址 = (4567H)*16+(1234H) = (468A4H)</p>
+<p>那么寄存器AX = 0001H</p>
+<p>因为默认的是DS寄存器，其实也可以指定前缀寄存器，即所谓的段超越前缀</p>
+<p>MOV AX, SS:[1234]H</p>
+<p>AX = SS*16+(1234H)</p>
+<h5 id="4、寄存器间接寻址方式"><a href="#4、寄存器间接寻址方式" class="headerlink" title="4、寄存器间接寻址方式"></a>4、寄存器间接寻址方式</h5><p>操作数在寄存器中，操作数的有效地址在SI\DI\BX(DS),        BP(SS)</p>
+<p>在这四个寄存器之一种，一般情况下如果有效地址在SI、DI、 BX中，则默认段地址是DS</p>
+<p>如果在BP中，则默认是SS</p>
+<p>不过和上面一样，指令中也可以指定段超越前缀来取得其他段中的数据</p>
+<p>指令示例：</p>
+<p>MOV AX,[SI] 引用的段寄存器是DS</p>
+<p>MOV AX,ES:[SI]，引用的段寄存器是ES</p>
+<p>MOV [BP],AX，引用的段寄存器是SS</p>
+<h5 id="5、寄存器相对寻址方式"><a href="#5、寄存器相对寻址方式" class="headerlink" title="5、寄存器相对寻址方式"></a>5、寄存器相对寻址方式</h5><p>操作数放在存储器中，操作数的有效地址是一个基址寄存器(BX、BP)或者是变址寄存器的(SI 、DI)内容加上指令中给定的8位</p>
+<p>或者是16位的位移偏移量之和</p>
+<p>其中和上面的一样，引用段地址的时候，BX、SI、DI的段地址寄存器是DS，BP的是SS，不过也可以采用段地址超前缀。</p>
+<p>其中给定的8位或者是16位采用补码形式表示。如果偏移量是8位，则需要进行符号扩展到16位</p>
+<p>MOV AX,[BX+1234H] ，引用段寄存器是DS，有效物理地址=DS<em>16+BX+1234H，(AX)=(DS</em>16+BX+1234H)</p>
+<p>MOV [BP+1234H],AX，引用段寄存器是SS</p>
+<p>MOV ES:[SI+1234H],AX,引用段寄存器是ES</p>
+<p>有时候指令也可以表示如左：MOV AX,1234H[BX]等。</p>
+<h5 id="6、基址加变址寻址方式"><a href="#6、基址加变址寻址方式" class="headerlink" title="6、基址加变址寻址方式"></a>6、基址加变址寻址方式</h5><p>操作数在存储器中，操作数的有效地址由基址寄存器(BX、BP)的内容与变址寄存器(DI、SI)之一的内容相加</p>
+<p>如果有BP则段寄存器是SS，其他的是DS</p>
+<p>指令示例：</p>
+<p>MOV AX,【BX】【DI】</p>
+<p> 等价于 MOV AX,[BX+DI]</p>
+<p>有效地址 = DS*16+BX+DI ,(AX) =(有效地址)</p>
+<p>同时也允许段超越前缀</p>
+<p>MOV DS:[BP+SI],AX</p>
+<p>寻址方式适合于数组操作，利用基址存储数组的首地址，变址存储元素的相对地址</p>
+<h5 id="7、相对基址加变址寻址方式"><a href="#7、相对基址加变址寻址方式" class="headerlink" title="7、相对基址加变址寻址方式"></a>7、相对基址加变址寻址方式</h5><p>操作数在存储器中，操作数的有效地址由基址寄存器之一的内容+变址寄存器之一的内容+8位或者是16位的偏移量之和。</p>
+<p>段寄存器和相关的符号扩展同前面。</p>
+<p>如果得到的有效地址超过FFFFH时，取64K的模。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>Title:</span><a href="/2017/01/05/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></p>
+        <p><span>Author:</span><a href="/" title="Back to Homepage">JKingslee的博客</a></p>
+        <p><span>Created:</span>2017-01-05, 00:00:25</p>
+        <p><span>Updated:</span>2018-01-05, 17:28:33</p>
+        <p>
+            <span>Full URL:</span><a class="post-url" href="/2017/01/05/8086地址分段与寻址方式/" title="8088/8086地址分段与寻址方式">http://yoursite.com/2017/01/05/8086地址分段与寻址方式/</a>
+            <span class="copy-path" data-clipboard-text="From http://yoursite.com/2017/01/05/8086地址分段与寻址方式/　　By JKingslee的博客" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">
+                    8088/8086CPU的功能结构（一）——内部结构与内部寄存器
+                </a>
+            </div>
+        
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#8088-8086地址分段与寻址方式"><span class="toc-number">1.</span> <span class="toc-text">8088/8086地址分段与寻址方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、明确地址分段的原因"><span class="toc-number">1.1.</span> <span class="toc-text">一、明确地址分段的原因</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#存储器的分段"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">存储器的分段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#段的分配"><span class="toc-number">1.1.0.2.</span> <span class="toc-text">段的分配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#段超越（段重设）"><span class="toc-number">1.1.0.3.</span> <span class="toc-text">段超越（段重设）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、寻址方式"><span class="toc-number">1.2.</span> <span class="toc-text">二、寻址方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#寻址方式的简单举例：（以源操作数的寻址为例）"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">寻址方式的简单举例：（以源操作数的寻址为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#寻址方式的详细说明和举例：（以源操作数的寻址为例）"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">寻址方式的详细说明和举例：（以源操作数的寻址为例）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、立即寻址方式"><span class="toc-number">1.2.0.2.1.</span> <span class="toc-text">1、立即寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、寄存器寻址方式"><span class="toc-number">1.2.0.2.2.</span> <span class="toc-text">2、寄存器寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、直接寻址方式"><span class="toc-number">1.2.0.2.3.</span> <span class="toc-text">3、直接寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、寄存器间接寻址方式"><span class="toc-number">1.2.0.2.4.</span> <span class="toc-text">4、寄存器间接寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5、寄存器相对寻址方式"><span class="toc-number">1.2.0.2.5.</span> <span class="toc-text">5、寄存器相对寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6、基址加变址寻址方式"><span class="toc-number">1.2.0.2.6.</span> <span class="toc-text">6、基址加变址寻址方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7、相对基址加变址寻址方式"><span class="toc-number">1.2.0.2.7.</span> <span class="toc-text">7、相对基址加变址寻址方式</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide"  title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"8088/8086地址分段与寻址方式　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/01/05/8086地址分段与寻址方式/" data-title="8088/8086地址分段与寻址方式" data-url="http://yoursite.com/2017/01/05/8086地址分段与寻址方式/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="Pre: 8088/8086CPU的功能结构（一）——内部结构与内部寄存器">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
