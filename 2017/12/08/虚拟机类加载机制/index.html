@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="概述&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我们都知道，计算机并不能直接读懂我们人所使用的语言，所以我们编写的程序必须转换成计算机能读懂的语言的才能执行。在JAVA的Class文件中描述的各种信息也不例外，最终都需要加载到虚拟机中之后才能运行和使用。而虚拟机如何加载这些Class">
+<meta name="keywords" content="JVM,类加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟机类加载机制">
+<meta property="og:url" content="http://yoursite.com/2017/12/08/虚拟机类加载机制/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="概述&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我们都知道，计算机并不能直接读懂我们人所使用的语言，所以我们编写的程序必须转换成计算机能读懂的语言的才能执行。在JAVA的Class文件中描述的各种信息也不例外，最终都需要加载到虚拟机中之后才能运行和使用。而虚拟机如何加载这些Class文件？Class文件中的信息进入到虚拟机后会发生什么变化？这些都是接下来将要说的内容。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-16T12:46:59.426Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="虚拟机类加载机制">
+<meta name="twitter:description" content="概述&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我们都知道，计算机并不能直接读懂我们人所使用的语言，所以我们编写的程序必须转换成计算机能读懂的语言的才能执行。在JAVA的Class文件中描述的各种信息也不例外，最终都需要加载到虚拟机中之后才能运行和使用。而虚拟机如何加载这些Class文件？Class文件中的信息进入到虚拟机后会发生什么变化？这些都是接下来将要说的内容。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>虚拟机类加载机制 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-虚拟机类加载机制" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/12/08/虚拟机类加载机制/" class="article-date">
+      <time datetime="2017-12-08T01:31:23.000Z" itemprop="datePublished">2017-12-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      虚拟机类加载机制
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/原创/">原创</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/类加载/">类加载</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;我们都知道，计算机并不能直接读懂我们人所使用的语言，所以我们编写的程序必须转换成计算机能读懂的语言的才能执行。在JAVA的Class文件中描述的各种信息也不例外，最终都需要加载到虚拟机中之后才能运行和使用。而虚拟机如何加载这些Class文件？Class文件中的信息进入到虚拟机后会发生什么变化？这些都是接下来将要说的内容。<br><a id="more"></a><br>&nbsp;&nbsp;&nbsp;&nbsp;虚拟机把描述类的数据从Class文件<strong>加载(Loading)</strong>到内存，并对数据进行<strong>连接(Linking)</strong>和<strong>初始化(Initialization)</strong>，其中连接分为 <em>验证(Verification)</em>、<em>准备(Preparation)</em>、<em>解析(Resolution)</em> 三步，最终形成可以被虚拟机直接使用的JAVA类型，这就是虚拟机的<strong>类加载机制</strong>。</p>
+<hr>
+<h1 id="类加载的过程"><a href="#类加载的过程" class="headerlink" title="类加载的过程"></a>类加载的过程</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;接下来我们详细说一下JAVA虚拟机中类加载的全过程，也就是<strong>加载</strong>、<strong>验证</strong>、<strong>准备</strong>、<strong>解析</strong>和<strong>初始化</strong>这5个阶段所执行的具体动作。</p>
+<h2 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;加载是类加载过程的第一个阶段，在加载阶段，虚拟机需要完成以下3件事情：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;1、通过一个类的全限定名来获取定义此类的二进制字节流。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;2、将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;3、在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在这里，第一条中的二进制字节流并不只是单纯的从一个Class文件中获取，他还可以从ZIP包中读取，从网络中获取（最典型的应用：Applet），还可以运算时生成(动态代理技术)等方式。<br>&nbsp;&nbsp;&nbsp;&nbsp;相对于类加载过程的其他阶段，一个非数组类的加载阶段（准确的说是加载阶段中获取二进制字节流的的动作）是开发人员可控性最强的，因为加载阶段既可以使用系统提供的引导类加载器来完成，也可以由用户自定义的类加载器去完成。<br>&nbsp;&nbsp;&nbsp;&nbsp;加载阶段与连接阶段的部分内容（一部分字节码文件格式验证动作）是交叉进行的，这两个阶段的开始时间仍然保持着固定的先后顺序。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;验证是连接阶段的第一步，主要目的是确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并不会危害虚拟机自身的安全。验证阶段是非常重要的，这个阶段是否严谨，直接决定了Java虚拟机是否能承受恶意代码的攻击。从整体上来看，验证阶段大致上分为4个阶段的检验动作：<strong>文件格式验证</strong>、<strong>元数据验证</strong>、<strong>字节码验证</strong>、<strong>符号引用验证</strong>。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>1.文件格式验证</strong>：该验证阶段的主要目的是保证输入的字节流能正确地解析并存储于方法区之内，格式上符合描述一个Java类型信息的要求。只有通过了这个阶段的验证后，字节流才会进入内存的方法区中存储，后面3个验证阶段全部是基于方法区的存储结构进行，不会再直接操作字节流。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>2.元数据验证</strong>：这个阶段的主要目的是对类的元数据信息进行语义校验，保证不存在不符合Java语言规范的元数据信息，此阶段是对元数据信息的<strong>数据类型</strong>进行校验。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>3.字节码验证</strong>：本阶段是整个验证过程中最复杂的一个阶段，主要是通过 <strong><em>数据流</em></strong> 和 <strong><em>控制流</em></strong> 分析，确定程序语义是合法的、符合逻辑的。这个阶段将对类的<strong>方法体</strong>进行校验分析。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>4.符号引用验证</strong>：本阶段是验证的最后一个阶段，发生在虚拟机将符号引用转化为直接引用的时候，这个转化将在连接的第三阶段——解析阶段发生。符号引用验证的目的是确保解析动作能正常执行。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;准备阶段是正式为类变量<strong>分配内存</strong>并<strong>设置类变量初始值</strong>的阶段。这里需要强调一下，首先，这时候进行内存分配的仅包括类变量(被static修饰的变量)，不包括实例变量，实例变量会在对象实例化时伴随对象一起分配在Java堆中。其次，这里的初始值“通常情况”下为数据的零值，看下方的代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static int value = 123;</span><br></pre></td></tr></table></figure></p>
+<p>这里value在准备阶段过后的初始值是0而不是123，把value赋值为123的动作将在<strong>初始化阶段</strong>才会执行。既然有通常情况，也就会有“特殊情况”：如果类字段的字段属性表中存在ConstantValue属性，那么准备阶段变量value就会被初始化为ConstantValue属性所指定的值，代码如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static final int value = 123;</span><br></pre></td></tr></table></figure></p>
+<p>这时，在准备阶段虚拟机会根据ConstantValue的设置将value赋值为123.</p>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;解析阶段是虚拟机将常量池内的<strong>符号引用</strong>替换为<strong>直接引用(得到类或者字段、方法在内存中的指针或者偏移量，以便直接调用该方法)</strong>的过程。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;在<strong>准备</strong>阶段，变量已经赋值过一次系统要求的初始值，而在<strong>初始化阶段</strong>，则根据程序员通过程序制定的主观计划去初始化<strong>类变量</strong>和<strong>其他资源</strong>，举个例子：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static int value1 = 2;</span><br><span class="line">public static int value2 = 6;</span><br><span class="line">static&#123;</span><br><span class="line">	value2 = 8;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在准备阶段，value1和value2都等于0，在初始化阶段value1和value2分别等于2和8。类的初始化阶段就是执行类构造器“<strong>&lt; clinit&gt;()</strong>”方法的过程，该方法只能在类加载的过程中由JVM调用，下面介绍一下&lt; clinit&gt;()的特点和细节：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;1、编译器收集的顺序是由语句在源文件中出现的顺序决定的，静态语句块中只能访问到定义在静态语句块之前的变量；</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;2、如果一个类的父类还没有初始化，那么会优先初始化父类，但是&lt; clinit&gt;()方法不会显示地调用父类&lt; clinit&gt;()方法，JVM负责保证一个类的&lt; clinit&gt;()方法执行之前，他父类的&lt; clinit&gt;()方法已经被执行；因此在虚拟机中第一个被执行&lt; clinit&gt;()方法的类一定是java.lang.Object。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;3、JVM必须确保一个类在初始化的过程中，如果是多线程需要同时初始化它，仅仅只能允许其中一个线程对其执行初始化操作，其余线程必须等待，只有在活动线程执行完对类的初始化操作之后，才会通知正在等待的其他线程。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;4、如果一个类中没有静态语句块，也没有对类变量的进行赋值操作，那么该类可以没有&lt; clinit&gt;()方法。另外，在接口中不需要先执行父接口的&lt; clinit&gt;()方法，只有当父接口中定义的变量被使用时，父接口才会初始化；接口的实现类在初始化时也一样不会执行接口的&lt; clinit&gt;()方法。</p>
+<p><strong>触发初始化的时间：</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;1、遇到<strong>new</strong>、<strong>getstatic</strong>、<strong>putstatic</strong>或<strong>invokestatic</strong>这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;2、使用java.lang.reflect包的方法对类进行反射调用的时候。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;3、放初始化一个类的时候，发现其父类还没有进行初始化过，则先初始化父类。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;4、当虚拟机启动时，用户需要指定一个要执行的主类（包含main方法的类），虚拟机会先初始化这个主类。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;5、当使用动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStstic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄对应的类没有进行初始化，则先触发初始化。</p>
+<hr>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Java虚拟机规范中并没有对 什么时候开始类加载过程的<strong>加载阶段</strong> 进行强制约束，这点可以交给虚拟机的具体实现来自由把握。但是对于<strong>初始化阶段</strong>，虚拟机规范则是严格规定了有且只有上文提到的5种情况。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;类的整个生命周期包括：加载、验证、准备、解析、初始化、使用、卸载7个阶段；其中加载、验证、准备、初始化、卸载这5个阶段的顺序是确定的，类的加载过程必须按照这种顺序按部就班的<strong>开始</strong>（不代表进行或完成），但<strong>解析</strong>阶段则不一定：它在某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的<strong>运行时绑定</strong>（也称为动态绑定或晚期绑定）。</p>
+<hr>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/12/08/虚拟机类加载机制/">虚拟机类加载机制</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2017-12-08, 09:31:23</p>
+        <p><span>最后更新:</span>2018-05-16, 20:46:59</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/08/虚拟机类加载机制/" title="虚拟机类加载机制">http://yoursite.com/2017/12/08/虚拟机类加载机制/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/12/08/虚拟机类加载机制/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/12/08/微机原理基础/">
+                    微机原理基础知识
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/12/06/8086地址分段与寻址方式/">
+                    8088/8086地址分段与寻址方式
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#类加载的过程"><span class="toc-number">2.</span> <span class="toc-text">类加载的过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#加载"><span class="toc-number">2.1.</span> <span class="toc-text">加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#验证"><span class="toc-number">2.2.</span> <span class="toc-text">验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-number">2.3.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解析"><span class="toc-number">2.4.</span> <span class="toc-text">解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初始化"><span class="toc-number">2.5.</span> <span class="toc-text">初始化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其他"><span class="toc-number">3.</span> <span class="toc-text">其他</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"虚拟机类加载机制　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/12/08/虚拟机类加载机制/" data-title="虚拟机类加载机制" data-url="http://yoursite.com/2017/12/08/虚拟机类加载机制/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/12/08/微机原理基础/" title="上一篇: 微机原理基础知识">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/12/06/8086地址分段与寻址方式/" title="下一篇: 8088/8086地址分段与寻址方式">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/MySQL查询性能优化/">MySQL查询性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/25/JAVA实现K-means算法/">JAVA实现K-means算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/02/浅析Synchronized和ReentrantLock的区别/">浅析Synchronized和ReentrantLock的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/20/Java线程池/">Java线程池</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/15/关于Java虚拟机的垃圾回收/">关于Java虚拟机的垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/微机原理基础/">微机原理基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/虚拟机类加载机制/">虚拟机类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/06/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
