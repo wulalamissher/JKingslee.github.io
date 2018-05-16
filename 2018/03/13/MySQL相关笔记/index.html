@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="MySQL引擎&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;MySQL的默认引擎是InnoDB，该引擎支持行锁，支持事务安全表。其次，MySQL其他常用的引擎是MyISAM，但是它只支持表锁，并且不支持事务安全表。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL相关笔记">
+<meta property="og:url" content="http://yoursite.com/2018/03/13/MySQL相关笔记/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="MySQL引擎&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;MySQL的默认引擎是InnoDB，该引擎支持行锁，支持事务安全表。其次，MySQL其他常用的引擎是MyISAM，但是它只支持表锁，并且不支持事务安全表。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;InnoDB引擎的默认隔离级别为Reaptable Read，他消除了不可重复读（删、改）的现象，并与MVCC兼容消除了幻读（增）的现">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-16T09:21:40.181Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL相关笔记">
+<meta name="twitter:description" content="MySQL引擎&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;MySQL的默认引擎是InnoDB，该引擎支持行锁，支持事务安全表。其次，MySQL其他常用的引擎是MyISAM，但是它只支持表锁，并且不支持事务安全表。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;InnoDB引擎的默认隔离级别为Reaptable Read，他消除了不可重复读（删、改）的现象，并与MVCC兼容消除了幻读（增）的现">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>MySQL相关笔记 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-MySQL相关笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/03/13/MySQL相关笔记/" class="article-date">
+      <time datetime="2018-03-13T08:10:54.000Z" itemprop="datePublished">2018-03-13</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MySQL相关笔记
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/原创/">原创</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="MySQL引擎"><a href="#MySQL引擎" class="headerlink" title="MySQL引擎"></a>MySQL引擎</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;MySQL的默认引擎是InnoDB，该引擎支持行锁，支持事务安全表。其次，MySQL其他常用的引擎是MyISAM，但是它只支持表锁，并且不支持事务安全表。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;InnoDB引擎的默认隔离级别为Reaptable Read，他消除了不可重复读（删、改）的现象，并与MVCC兼容消除了幻读（增）的现象。MVCC只与Read Committed和Reaptable Read两种隔离级别兼容。<a id="more"></a></p>
+<hr>
+<p><br></p>
+<h1 id="MySQL的事务"><a href="#MySQL的事务" class="headerlink" title="MySQL的事务"></a>MySQL的事务</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;MySQL的事务有四个特性：原子性、一致性、隔离性、持久性。</p>
+<ul>
+<li>原子性：构成事务的所有操作必须是一个逻辑单元，要么全部执行，要么全部不执行。</li>
+<li>一致性：数据库总是从一个一致性的状态转换到另外一个一致性的状态。</li>
+<li>隔离性：通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的。</li>
+<li>持久性：一旦事务提交，其所做的修改会永久保存到数据库中。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;事务实现隔离性的原理就是依赖于InnoDB引擎行锁。</p>
+<hr>
+<p><br></p>
+<h1 id="MySQL索引"><a href="#MySQL索引" class="headerlink" title="MySQL索引"></a>MySQL索引</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;MySQL的数据是放在外部存储的，也就是说IO才是性能瓶颈的关键，所以我们的索引需要减少树的深度，所以我们需要更多分叉的树，还需要更适合磁盘操作特性的数据结构。因此，MySQL选择了B+树作为其索引的数据结构。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;使用B+树作为索引数据结构的优势：</p>
+<ul>
+<li>只有叶子节点才记录数据，非叶子节点只包含索引；所有非终端节点（内部节点）并不存储数据信息，而是保存其叶子节点的最小值作为索引。这样，一次性读入内存中的需要查找的关键字就越多。相对来说IO读写次数也就降低了。</li>
+<li>能够提供稳定高效的范围扫描功能；这个特点主要因为所有叶子节点相互连接，并且叶子节点本身依关键字的大小自小而大顺序链接。</li>
+</ul>
+<hr>
+<p><br></p>
+<h1 id="MySQL三段封锁协议"><a href="#MySQL三段封锁协议" class="headerlink" title="MySQL三段封锁协议"></a>MySQL三段封锁协议</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;共享锁（S锁）：又称读锁，若事务T对数据对象A加上S锁，则其他事务只能再对A加S锁，不能加X锁，直到事务T释放A上的锁。保证了其他事务可以读取数据A，但是在T释放A的锁之前不能对其进行修改。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;排他锁（X锁）：又称写锁，若事务T对数据对象A加上X锁，则其他事务都不能再对A加上任何类型的锁。保证了其他事务在T释放A的锁之前既不能读取也不能修改A。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>三段封锁协议：</strong></p>
+<ul>
+<li>一级封锁协议：事务T在修改数据R之前必须对其先加上X锁，直到事务结束（正常或异常）才释放。1级封锁协议可防止丢失修改，并保证事务T是可恢复的。在1级封锁协议中，如果仅仅是读数据，是不需要加锁的，所以可能产生不可重复读和脏读。</li>
+<li>二级封锁协议：在1级封锁协议的基础上加上 事务T在读取数据R之前必须对R加上S锁，<strong>读完后可释放锁</strong>。2级封锁协议防止了修改丢失，还可进一步防止脏读。</li>
+<li>三级封锁协议：在1级封锁协议的基础上加上 事务T在读取数据R之前必须对R加上S锁，<strong>直到事务结束才释放</strong>。3级封锁协议防止了修改丢失和脏读外，还防止了不可重复读。</li>
+</ul>
+<hr>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2018-03-13, 16:10:54</p>
+        <p><span>最后更新:</span>2018-05-16, 17:21:40</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/13/MySQL相关笔记/" title="MySQL相关笔记">http://yoursite.com/2018/03/13/MySQL相关笔记/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/03/13/MySQL相关笔记/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/01/25/JAVA实现K-means算法/">
+                    JAVA实现K-means算法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL引擎"><span class="toc-number">1.</span> <span class="toc-text">MySQL引擎</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL的事务"><span class="toc-number">2.</span> <span class="toc-text">MySQL的事务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL索引"><span class="toc-number">3.</span> <span class="toc-text">MySQL索引</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL三段封锁协议"><span class="toc-number">4.</span> <span class="toc-text">MySQL三段封锁协议</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"MySQL相关笔记　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/03/13/MySQL相关笔记/" data-title="MySQL相关笔记" data-url="http://yoursite.com/2018/03/13/MySQL相关笔记/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/01/25/JAVA实现K-means算法/" title="下一篇: JAVA实现K-means算法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/25/JAVA实现K-means算法/">JAVA实现K-means算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/浅析Synchronized和ReentrantLock的区别/">浅析Synchronized和ReentrantLock的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/07/MySQL查询性能优化/">MySQL查询性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/26/Java线程池/">Java线程池</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/12/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/虚拟机类加载机制/">虚拟机类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/05/关于Java虚拟机的垃圾回收/">关于Java虚拟机的垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/微机原理基础/">微机原理基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

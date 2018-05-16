@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="慢查询基础：优化数据访问&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;查询性能低下最基本的原因是访问的数据太多，大部分性能低下的查询都可以通过减少访问的数据量的方式进行优化。对于低效的查询，通过下列两个步骤来分析总是很有效：  确认应用程序是否在检索大量超过需要的数据 确认MySQL服">
+<meta name="keywords" content="MySQL,性能优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL查询性能优化">
+<meta property="og:url" content="http://yoursite.com/2017/12/07/MySQL查询性能优化/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="慢查询基础：优化数据访问&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;查询性能低下最基本的原因是访问的数据太多，大部分性能低下的查询都可以通过减少访问的数据量的方式进行优化。对于低效的查询，通过下列两个步骤来分析总是很有效：  确认应用程序是否在检索大量超过需要的数据 确认MySQL服务器层是否在分析大量超过需要的数据行。  向数据库请求了不需要的数据&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbs">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-10T12:20:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL查询性能优化">
+<meta name="twitter:description" content="慢查询基础：优化数据访问&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;查询性能低下最基本的原因是访问的数据太多，大部分性能低下的查询都可以通过减少访问的数据量的方式进行优化。对于低效的查询，通过下列两个步骤来分析总是很有效：  确认应用程序是否在检索大量超过需要的数据 确认MySQL服务器层是否在分析大量超过需要的数据行。  向数据库请求了不需要的数据&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbs">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>MySQL查询性能优化 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-MySQL查询性能优化" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/12/07/MySQL查询性能优化/" class="article-date">
+      <time datetime="2017-12-07T12:23:29.000Z" itemprop="datePublished">2017-12-07</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MySQL查询性能优化
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/原创/">原创</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/性能优化/">性能优化</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="慢查询基础：优化数据访问"><a href="#慢查询基础：优化数据访问" class="headerlink" title="慢查询基础：优化数据访问"></a>慢查询基础：优化数据访问</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;查询性能低下最基本的原因是访问的数据太多，大部分性能低下的查询都可以通过减少访问的数据量的方式进行优化。对于低效的查询，通过下列两个步骤来分析总是很有效：</p>
+<ol>
+<li>确认应用程序是否在检索大量超过需要的数据</li>
+<li>确认MySQL服务器层是否在分析大量超过需要的数据行。</li>
+</ol>
+<h2 id="向数据库请求了不需要的数据"><a href="#向数据库请求了不需要的数据" class="headerlink" title="向数据库请求了不需要的数据"></a>向数据库请求了不需要的数据</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;下面是一些典型的案例：<a id="more"></a></p>
+<ul>
+<li>查询不需要的记录</li>
+<li>多表关联时返回全部列</li>
+<li>总是取出全部列</li>
+<li>重复查询相同的数据</li>
+</ul>
+<h2 id="扫描额外的记录"><a href="#扫描额外的记录" class="headerlink" title="扫描额外的记录"></a>扫描额外的记录</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;衡量查询开销的三个指标：</p>
+<ul>
+<li>响应时间</li>
+<li>扫描的行数</li>
+<li>返回的行数</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;如果发现查询需要扫描大量的行数但只返回少数的行，那么通常使用下面的技巧去优化：</p>
+<ul>
+<li>使用索引覆盖扫描。把所有需要用的列都放到索引中，这样存储引擎无须回表获取对应行就可以返回结果</li>
+<li>改变库表结构。</li>
+<li>重写复杂的查询，让MySQL优化器能够以更优化的方式执行这个查询</li>
+</ul>
+<hr>
+<p><br></p>
+<h1 id="重构查询的方式"><a href="#重构查询的方式" class="headerlink" title="重构查询的方式"></a>重构查询的方式</h1><ol>
+<li>是否需要将一个复杂的查询分成多个简单的查询，这是设计查询时需要考虑的重要问题</li>
+<li>切分查询。将大查询切分成小查询，完成的功能一样，但将其拆分为几个次，每次完成一小部分任务</li>
+<li>分解关联查询。将一条查询分解为多条查询，但返回同样的结果。</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;用<strong>分解关联查询</strong>的方式重构查询有如下优势：</p>
+<ul>
+<li>让缓存的效率更高</li>
+<li>将查询分解后，执行单个查询可以减少锁竞争</li>
+<li>在应用层做关联，可以更容易对数据库进行拆分，更容易做到高性能和可扩展</li>
+<li>查询本身效率可能有所提升</li>
+<li>减少冗余记录的查询</li>
+</ul>
+<hr>
+<p><br></p>
+<h1 id="查询执行基础"><a href="#查询执行基础" class="headerlink" title="查询执行基础"></a>查询执行基础</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;MySQL查询执行路径：</p>
+<ol>
+<li>客户端发送一条查询给服务器</li>
+<li>服务器先检查查询缓存，如果命中缓存，则立即返回查询结果；如果未命中，进入下一阶段</li>
+<li>服务器进行SQL解析、预处理，再由优化器生成对应的执行计划</li>
+<li>MySQL根据优化器生成的执行计划，调用存储引擎的API来执行查询</li>
+<li>将结果返回给客户端</li>
+</ol>
+<h2 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;一条查询可以有很多种执行方式，最后返回的结果都相同。优化器的作用就是找到其中最好的执行计划，但是由于多种原因，优化器选择的执行计划也并不总是最优的。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;查询优化器有很多优化策略来生成一个最优的执行计划。优化策略可以分为两种，一种是静态优化，另一种是动态优化。</p>
+<ul>
+<li><strong>静态优化</strong>：静态优化可以直接对解析树进行分析，并完成优化。静态优化不依赖于特别的数值，它在第一次完成后就一直有效，即使使用不同的参数重复执行查询也不会发生变化。可以认为这是一种“编译时优化”。</li>
+<li><strong>动态优化</strong>：动态优化和上下文有关，也可其他很多因素有关。它需要在每次查询的时候重新评估，可以认为这是“运行时优化”。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>MySQL能够处理的一些优化类型</strong>：</p>
+<ul>
+<li>重新定义关联表的顺序</li>
+<li>将外连接转化成内连接</li>
+<li>使用等价变换规则</li>
+<li>优化COUNT()、MIN()和MAX()</li>
+<li>预估并转化为常数表达式</li>
+<li>覆盖索引扫描</li>
+<li>子优化查询</li>
+<li>提前终止查询</li>
+<li>等值传播</li>
+<li>列表IN()的比较</li>
+</ul>
+<hr>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;想要获得高性能的查询效果，<strong>查询优化、索引优化、库表结构优化</strong>需要齐头并进，一个不落。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;当一个查询性能很低下时，可以<strong>查询慢日志</strong>，检查程序是否检索了大量超过需要的数据，MySQL服务器层是否分析大量超过需要的数据行；还可以用<strong>Explain检查查询</strong>是否建立索引或者没有使用索引。然后通过发现的问题进行性能改进。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/12/07/MySQL查询性能优化/">MySQL查询性能优化</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2017-12-07, 20:23:29</p>
+        <p><span>最后更新:</span>2018-04-10, 20:20:12</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/07/MySQL查询性能优化/" title="MySQL查询性能优化">http://yoursite.com/2017/12/07/MySQL查询性能优化/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/12/07/MySQL查询性能优化/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/12/08/浅析Synchronized和ReentrantLock的区别/">
+                    浅析Synchronized和ReentrantLock的区别
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/12/04/8086寄存器详解/">
+                    8088/8086CPU的功能结构（二）——内部寄存器详解
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#慢查询基础：优化数据访问"><span class="toc-number">1.</span> <span class="toc-text">慢查询基础：优化数据访问</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#向数据库请求了不需要的数据"><span class="toc-number">1.1.</span> <span class="toc-text">向数据库请求了不需要的数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扫描额外的记录"><span class="toc-number">1.2.</span> <span class="toc-text">扫描额外的记录</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重构查询的方式"><span class="toc-number">2.</span> <span class="toc-text">重构查询的方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#查询执行基础"><span class="toc-number">3.</span> <span class="toc-text">查询执行基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#查询优化器"><span class="toc-number">3.1.</span> <span class="toc-text">查询优化器</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"MySQL查询性能优化　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/12/07/MySQL查询性能优化/" data-title="MySQL查询性能优化" data-url="http://yoursite.com/2017/12/07/MySQL查询性能优化/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/12/08/浅析Synchronized和ReentrantLock的区别/" title="上一篇: 浅析Synchronized和ReentrantLock的区别">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/12/04/8086寄存器详解/" title="下一篇: 8088/8086CPU的功能结构（二）——内部寄存器详解">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/25/JAVA实现K-means算法/">JAVA实现K-means算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/浅析Synchronized和ReentrantLock的区别/">浅析Synchronized和ReentrantLock的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/07/MySQL查询性能优化/">MySQL查询性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/26/Java线程池/">Java线程池</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/12/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/虚拟机类加载机制/">虚拟机类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/05/关于Java虚拟机的垃圾回收/">关于Java虚拟机的垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/微机原理基础/">微机原理基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

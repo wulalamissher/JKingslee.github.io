@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java在JDK1.5之后加入了java.util.concurrent包，这包中有一个接口Executor，它是Java线程池的顶级接口。但在严格意义上讲它并不是一个线程池，而是一个执行线程的工具。真正的线程池接口是ExrcutorSer">
+<meta name="keywords" content="Java,线程池,ThreadPoolExecutor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java线程池">
+<meta property="og:url" content="http://yoursite.com/2017/10/26/Java线程池/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java在JDK1.5之后加入了java.util.concurrent包，这包中有一个接口Executor，它是Java线程池的顶级接口。但在严格意义上讲它并不是一个线程池，而是一个执行线程的工具。真正的线程池接口是ExrcutorService。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;那么我们为什么要使用线程池呢，我们都知道，每当我们创建">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-16T09:21:42.534Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java线程池">
+<meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java在JDK1.5之后加入了java.util.concurrent包，这包中有一个接口Executor，它是Java线程池的顶级接口。但在严格意义上讲它并不是一个线程池，而是一个执行线程的工具。真正的线程池接口是ExrcutorService。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;那么我们为什么要使用线程池呢，我们都知道，每当我们创建">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Java线程池 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Java线程池" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/10/26/Java线程池/" class="article-date">
+      <time datetime="2017-10-26T10:54:01.000Z" itemprop="datePublished">2017-10-26</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java线程池
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/原创/">原创</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ThreadPoolExecutor/">ThreadPoolExecutor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/线程池/">线程池</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Java在JDK1.5之后加入了java.util.concurrent包，这包中有一个接口Executor，它是Java线程池的顶级接口。但在严格意义上讲它并不是一个线程池，而是一个执行线程的工具。真正的线程池接口是ExrcutorService。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;那么我们为什么要使用线程池呢，我们都知道，每当我们创建一个线程的时候，都会耗费相应的时间和空间。而线程池的主要作用就是减少时间和空间的<a id="more"></a>开销。即：<br></p>
+<ul>
+<li><strong>减少创建和销毁线程的次数</strong>，每个工作线程都可以被重复利用，可执行多个任务。</li>
+<li>可以根据系统的承受能力，<strong>调整线程池中工作线程的数目，防止消耗过多的内存</strong>（JDk1.5以后每个线程堆栈大小为1MB）。</li>
+</ul>
+<p><br></p>
+<h1 id="创建线程池"><a href="#创建线程池" class="headerlink" title="创建线程池"></a>创建线程池</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;创建一个线程池比较复杂，Executor类里面提供了一些静态工厂，生成一些常用的线程池。<br></p>
+<ol>
+<li><strong>newSingleThreadExecutor</strong>：创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。使用LinkedBlockingQueue（无界队列）。</li>
+<li><strong>newFixedThreadPool</strong>：创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。使用LinkedBlockingQueue（无界队列）。</li>
+<li><strong>newCachedThreadPool</strong>：创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。使用SynchronousQueue。</li>
+<li><strong>newScheduledThreadPool</strong>：创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。</li>
+</ol>
+<hr>
+<h1 id="ThreadPoolExecutor类"><a href="#ThreadPoolExecutor类" class="headerlink" title="ThreadPoolExecutor类"></a>ThreadPoolExecutor类</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;java.util.concurrent.ThreadPoolExecutor类是线程池中最核心的一个类，他是类ExecutorService的默认实现，想要更深的了解Java中的线程池，必须先了解这个类。<br></p>
+<h2 id="ThreadPoolExecutor类的主要参数"><a href="#ThreadPoolExecutor类的主要参数" class="headerlink" title="ThreadPoolExecutor类的主要参数"></a>ThreadPoolExecutor类的主要参数</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;在ThreadPoolExecutor类中，有几个极为重要的参数：</p>
+<ul>
+<li><strong>corePoolSize</strong>：线程池中保存的线程数，包括运行线程和空闲线程。当池中的线程达到corePoolSize的时候，就会把新到达的任务放在缓存队列当中。</li>
+<li><strong>maximumPoolSize</strong>：线程池的最大线程数，他决定了线程池最多能创建多少个线程。当corePoolSize和maximumPoolSize相同时，将创建一个固定大小的线程池。</li>
+<li><strong>keepAliveTime</strong>：表示空闲线程保留的最长时间，达到keepAliveTime时，线程则会终止。  在默认情况下，当线程池中的线程数量大于corePoolSize设置的值时，keepAliveTime才会起作用，直到线程池中线程数量不大于corePoolSize。</li>
+<li><strong>unit</strong>：参数keepAliveTime的时间单位。有7种取值，在TimeUnit类中有7种静态属性，分别为：天（DAYS）、小时（HOURS）、分（MINUTES）、秒（SECONDS）、毫秒（MILLISECONDS）、微秒（MICROSECONDS）、纳秒（NANOSECONDS）。</li>
+<li><strong>workQueue</strong>：一个阻塞队列，用来存储等待执行的任务。此队列仅保持由execute方法提交的Runnable任务。这里的阻塞队列有以下几种选择：ArrayBlockingQueue、LinkedBlockingQueue和SynchronousQueue。一般使用LinkedBlockingQueue和SynchronousQueue。如果使用无界queue，那么maximumPoolSize是没有意义的。</li>
+<li><strong>threadFactory</strong>：线程工厂，主要用于创建新线程。</li>
+<li><strong>handler</strong>：由于超出线程范围和队列容量而使执行被阻塞时 所使用的处理程序。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>注意</strong>：<br><br>&nbsp;&nbsp;&nbsp;&nbsp;如果运行的线程少于corePoolSize，则Executor首选添加新的线程，而不选择排队。也就是说，当运行线程数小于corePoolSize，新的线程直接开始运行，不会存放到workQueue队列中。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;如果运行的线程多于corePoolSize，则Executor首选将请求添加进队列，<strong>不添加新的线程</strong>。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;如果无法添加进队列（队列已满），则创建新的线程。若创建此线程将超出maximumPoolSize，则交由handler处理，handler一般有4种处理方法，分别为：<br><br>&nbsp;&nbsp;&nbsp;&nbsp;1、直接抛出异常，这是默认策略；<br><br>&nbsp;&nbsp;&nbsp;&nbsp;2、用调用者所在的线程来执行任务；<br><br>&nbsp;&nbsp;&nbsp;&nbsp;3、忽略该任务，直接丢弃；<br><br>&nbsp;&nbsp;&nbsp;&nbsp;4、删除阻塞队列中最靠前的任务，并将此任务添加进阻塞队列。<br></p>
+<hr>
+<p><br></p>
+<h2 id="ThreadPoolExecutor中的方法"><a href="#ThreadPoolExecutor中的方法" class="headerlink" title="ThreadPoolExecutor中的方法"></a>ThreadPoolExecutor中的方法</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;首先说说几个类的关系。在ThreadPoolExecutor的源码中，有：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public class ThreadPoolExecutor extends AbstractExecutorService &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>说明类ThreadPoolExecutor继承自类AbstractExecutorService，接下来，我们再看看类AbstractExecutorService：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public abstract class AbstractExecutorService implements ExecutorService &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>他实现了接口ExecutorService，而ExecutorService又继承自Execute。<strong>ThreadPoolExecutor类是Executor类的底层实现</strong>。自此，和ThreadPoolExecutor有关的几个类和接口的关系基本上清楚了。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;现在，说说类ThreadPoolExecutor中的几个核心方法：<br></p>
+<ul>
+<li><strong>execute</strong>：该方法实际上是Execute类中的方法，在ThreadPoolExecutor中进行了具体的实现。它是ThreadPoolExecutor的<strong>核心方法</strong>，通过这个方法向线程池提交一个任务，交由线程池去处理。</li>
+<li><strong>submit</strong>：submit()方法是在ExecutorService中声明的方法，在AbstractExecutorService时就有了具体的实现。这个方法也是用来向线程池提交任务的，但是它与execute不同，它能返回任务执行的结果。</li>
+<li><strong>shutdown</strong>和<strong>shutdownNow</strong>：根据jdk帮助文档：shutdown是启动有序关闭，先前提交的任务会被执行，但是不会接受新的任务。而shutdownNow是停止所有任务，并且返回正在等待执行的任务列表。从此方法返回时，这些任务将从任务列表中删除。</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/10/26/Java线程池/">Java线程池</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2017-10-26, 18:54:01</p>
+        <p><span>最后更新:</span>2018-05-16, 17:21:42</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/10/26/Java线程池/" title="Java线程池">http://yoursite.com/2017/10/26/Java线程池/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/10/26/Java线程池/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">
+                    8088/8086CPU的功能结构（一）——内部结构与内部寄存器
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/09/12/Java内存模型/">
+                    Java内存模型
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#创建线程池"><span class="toc-number">1.</span> <span class="toc-text">创建线程池</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ThreadPoolExecutor类"><span class="toc-number">2.</span> <span class="toc-text">ThreadPoolExecutor类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ThreadPoolExecutor类的主要参数"><span class="toc-number">2.1.</span> <span class="toc-text">ThreadPoolExecutor类的主要参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ThreadPoolExecutor中的方法"><span class="toc-number">2.2.</span> <span class="toc-text">ThreadPoolExecutor中的方法</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Java线程池　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/10/26/Java线程池/" data-title="Java线程池" data-url="http://yoursite.com/2017/10/26/Java线程池/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/" title="上一篇: 8088/8086CPU的功能结构（一）——内部结构与内部寄存器">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/09/12/Java内存模型/" title="下一篇: Java内存模型">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/25/JAVA实现K-means算法/">JAVA实现K-means算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/浅析Synchronized和ReentrantLock的区别/">浅析Synchronized和ReentrantLock的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/07/MySQL查询性能优化/">MySQL查询性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/26/Java线程池/">Java线程池</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/12/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/虚拟机类加载机制/">虚拟机类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/05/关于Java虚拟机的垃圾回收/">关于Java虚拟机的垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/微机原理基础/">微机原理基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/05/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
