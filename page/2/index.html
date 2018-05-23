@@ -215,11 +215,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-Java内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-8086地址分段与寻址方式" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/12/04/Java内存模型/" class="article-date">
-      <time datetime="2017-12-04T01:08:53.000Z" itemprop="datePublished">2017-12-04</time>
+      <a href="/2017/12/06/8086地址分段与寻址方式/" class="article-date">
+      <time datetime="2017-12-05T16:00:25.000Z" itemprop="datePublished">2017-12-06</time>
 </a>
 
 
@@ -234,7 +234,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/04/Java内存模型/">Java内存模型</a>
+      <a class="article-title" href="/2017/12/06/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a>
     </h1>
   
 
@@ -244,8 +244,10 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;Java内存模型的主要目标是定义程序中各个变量（实例字段、静态字段、数组元素）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。</p>
-<h1 id="主内存与工作内存"><a href="#主内存与工作内存" class="headerlink" title="主内存与工作内存"></a>主内存与工作内存</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Java内存模型规定了所有的变量都存储于<strong>主内存（Main Memory）</strong>。每条线程都有自己的<strong>工作内存（Working Memory）</strong>，线程的工作内存中保存了被该线程使用到的<strong>变量的主内存拷贝</strong>。线程对变量的所有操作（读取、赋值等）都<strong>必须</strong>在<strong>工作内存</strong>中进行，而不能直接读写主内存中的变量。<br>
+              <h1 id="8088-8086地址分段与寻址方式"><a href="#8088-8086地址分段与寻址方式" class="headerlink" title="8088/8086地址分段与寻址方式"></a>8088/8086地址分段与寻址方式</h1><h2 id="一、明确地址分段的原因"><a href="#一、明确地址分段的原因" class="headerlink" title="一、明确地址分段的原因"></a>一、明确地址分段的原因</h2><p>​     因为在8086中CPU的地址线是20位，那么实际可用的最大物理地址空间是1MB,地址范围为00000H-0FFFFFH，内存中每个字节单元有唯一的20位物理地址，CPU存取内存中的程序和数据必须使用20位物理地址。</p>
+<p><excerpt in="" index=""> </excerpt></p>
+<ul>
+<li>
           
       
     </div>
@@ -254,18 +256,18 @@
       
       
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/原创/">原创</a>
+    <a class="article-category-link" href="/categories/日志/">日志</a>
     </div>
 
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/主内存/">主内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/先行发生/">先行发生</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存交互/">内存交互</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存模型/">内存模型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/工作内存/">工作内存</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寻址/">寻址</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/汇编/">汇编</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
     </div>
 
       
         <p class="article-more-link">
-          <a href="/2017/12/04/Java内存模型/#more">more >></a>
+          <a href="/2017/12/06/8086地址分段与寻址方式/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -284,11 +286,11 @@
 
 
   
-    <article id="post-深入Web请求过程" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-8086寄存器详解" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/11/30/深入Web请求过程/" class="article-date">
-      <time datetime="2017-11-30T12:00:25.000Z" itemprop="datePublished">2017-11-30</time>
+      <a href="/2017/12/04/8086寄存器详解/" class="article-date">
+      <time datetime="2017-12-04T09:30:25.000Z" itemprop="datePublished">2017-12-04</time>
 </a>
 
 
@@ -303,7 +305,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/30/深入Web请求过程/">深入Web请求过程</a>
+      <a class="article-title" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a>
     </h1>
   
 
@@ -313,8 +315,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <h1 id="B-S网络架构概述"><a href="#B-S网络架构概述" class="headerlink" title="B/S网络架构概述"></a>B/S网络架构概述</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;B/S网络架构都基于统一的应用层协议HTTP来交互数据，HTTP是一种<strong>无状态的短链接</strong>通信。通常一次请求就完成了一次数据交互，然后这次通信链接就断开了。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;当一个用户在浏览器里输入一个URL并发送请求时，将会发生很多操作:</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;首先会请求DNS把域名解析成对应的IP地址，然后根据IP地址在互联网上找到对应的服务器，向这个服务器发起一个Get请求，由这个服务器决定返回默认的数据资源给访问用户。
+              <h1 id="8088-8086寄存器详解笔记"><a href="#8088-8086寄存器详解笔记" class="headerlink" title="8088/8086寄存器详解笔记"></a>8088/8086寄存器详解笔记</h1><h2 id="8088-8086寄存器认识"><a href="#8088-8086寄存器认识" class="headerlink" title="8088/8086寄存器认识"></a>8088/8086寄存器认识</h2><p>8088/8086寄存器个数为14个，而且每个寄存器只能存放2个byte的内容，而且均为16位。</p>
+<p>分别为：AX（累加器Accumulate）,BX（基址寄存器Base）,CX（计数寄存器Count）,DX（数据寄存器Data）,SP（堆栈指针寄存器Stack Pointer）,BP（基址指针寄存器Base Pointer）,SI（Source Index源变址）,DI（Destination Index目的变址）,IP（Instruction Pointer指令指针）,FLAGS（flags标志寄存器）,CS（Code Segment代码段寄存器）,DS（Data Segment数据段）,ES（Extra Segment附加数据段）,SS（Stack Segment堆栈段）。</p>
+<p><excerpt in="" index=""> </excerpt></p>
+<ul>
+<li>
           
       
     </div>
@@ -329,12 +334,12 @@
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CDN/">CDN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DNS/">DNS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/">Web</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/转载/">转载</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/寄存器/">寄存器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微机原理/">微机原理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
     </div>
 
       
         <p class="article-more-link">
-          <a href="/2017/11/30/深入Web请求过程/#more">more >></a>
+          <a href="/2017/12/04/8086寄存器详解/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

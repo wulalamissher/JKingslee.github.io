@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="JKingslee的博客" />
+
+
+
+<meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java内存模型的主要目标是定义程序中各个变量（实例字段、静态字段、数组元素）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。 主内存与工作内存&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;">
+<meta name="keywords" content="内存交互,内存模型,主内存,工作内存,先行发生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java内存模型">
+<meta property="og:url" content="http://yoursite.com/2017/12/14/Java内存模型/index.html">
+<meta property="og:site_name" content="Kingslee的博客">
+<meta property="og:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java内存模型的主要目标是定义程序中各个变量（实例字段、静态字段、数组元素）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。 主内存与工作内存&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java内存模型规定了所有的变量都存储于主内存（Main Memory）。每条线程都有自己的工作内存（Working Memory），">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-23T13:47:50.422Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java内存模型">
+<meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java内存模型的主要目标是定义程序中各个变量（实例字段、静态字段、数组元素）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。 主内存与工作内存&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Java内存模型规定了所有的变量都存储于主内存（Main Memory）。每条线程都有自己的工作内存（Working Memory），">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Kingslee的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Java内存模型 | Kingslee的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">JKingslee的博客</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">专注，进步</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">JKingslee的博客</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/wulalamissher" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/qq_40951128?ref=toolbar" title="CSDN"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/my/m/music/playlist?id=443605704" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Java内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/12/14/Java内存模型/" class="article-date">
+      <time datetime="2017-12-14T01:08:53.000Z" itemprop="datePublished">2017-12-14</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java内存模型
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/原创/">原创</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/主内存/">主内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/先行发生/">先行发生</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存交互/">内存交互</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存模型/">内存模型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/工作内存/">工作内存</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Java内存模型的主要目标是定义程序中各个变量（实例字段、静态字段、数组元素）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。</p>
+<h1 id="主内存与工作内存"><a href="#主内存与工作内存" class="headerlink" title="主内存与工作内存"></a>主内存与工作内存</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Java内存模型规定了所有的变量都存储于<strong>主内存（Main Memory）</strong>。每条线程都有自己的<strong>工作内存（Working Memory）</strong>，线程的工作内存中保存了被该线程使用到的<strong>变量的主内存拷贝</strong>。线程对变量的所有操作（读取、赋值等）都<strong>必须</strong>在<strong>工作内存</strong>中进行，而不能直接读写主内存中的变量。<br><a id="more"></a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>注意：</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;上文的<strong>变量</strong>包括了实例字段、静态字段和构成数组对象的元素，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这里所讲的主内存、工作内存与Java内存区域中的Java堆、栈、方法区等并不是同一个层次的内存划分，这两者基本是没有关系的。</p>
+<h1 id="内存间的交互操作"><a href="#内存间的交互操作" class="headerlink" title="内存间的交互操作"></a>内存间的交互操作</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;关于主内存和工作内存间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步到主内存之类的实现细节，Java内存模型定义了以下<strong>8种操作</strong>来完成，虚拟机实现时<strong>必须保证</strong>下面提及的<strong>每一种操作</strong>都是<strong>原子的</strong>、<strong>不可再分的</strong>（double、long类型在某些平台的load、store、read、write允许有例外）。</p>
+<ul>
+<li><strong>lock（锁定）：作用于主内存的变量</strong>，它把一个变量标识为一条线程独占的状态。</li>
+<li><strong>read（读取）：作用于主内存的变量</strong>，它把一个变量的值从主内存传输到线程的工作内存中，以便以后的load动作使用。</li>
+<li><strong>load（载入）：作用于工作内存的变量</strong>，它把read操作从主内存得到的变量值放入工作内存的变量副本中。</li>
+<li><strong>use（使用）：作用于工作内存的变量</strong>，它把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值得字节码指令时将会执行这个操作。</li>
+<li><strong>assign（赋值）：作用于工作内存的变量</strong>，它把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。</li>
+<li><strong>store（存储）：作用于工作内存的变量</strong>，它把工作内存中一个变量的值传送到主内存中，以便以后的write操作使用。</li>
+<li><strong>write（写入）：作用于主内存的变量</strong>，它把store操作从工作内存中得到的变量的值放入主内存的变量中。</li>
+<li><strong>unlock（解锁）：作用于主内存变量</strong>，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;如果要把一个变量从主内存复制到工作内存，那就要<strong>顺序执行</strong>read和load操作，如果要把变量从工作内存同步回主内存，就要<strong>顺序执行</strong>store和write操作。注意：Java内存模型只要求顺序执行，没有保证是连续执行，如read a、read b、load a、load b是可以的。除此之外，Java内存模型还规定了在执行上述8种操作时<strong>必须满足以下规则</strong>：</p>
+<ol>
+<li>不允许read和load、store和write操作之一单独出现，即不允许一个变量从主内存读取了但工作内存不接受，或者从工作内存发起回写了但主内存不接受的情况出现。</li>
+<li>不允许一个线程丢弃它的最近的assign操作，即变量在工作内存中改变了之后必须把该改变同步回主内存。</li>
+<li>不允许一个无原因的（没有发生任何assign操作）把数据从线程的工作内存同步回内存中。</li>
+<li>一个新的变量只能在主内存中“诞生”，不允许在工作内存中直接使用一个未被初始化（load或assign）的变量。</li>
+<li>一个变量在同一时刻只允许一条线程对其进行lock操作，但lock操作可以被同一条线程执行多次，多次执行lock后，只有执行相同次数的unlock操作，变量才会被解锁。</li>
+<li>如果对一个变量执行lock操作，那将会清空工作内存中此变量的值，在执行引擎使用这个变量之前，需要重新执行load或assign操作初始化其变量的值。</li>
+<li>如果一个变量事先没有被lock锁定，那就不允许对它进行unlock操作，也不允许去unlock一个被其他线程锁定的变量。</li>
+<li>对一个变量执行unlock操作之前，必须先把变量同步回主内存中（执行store、write操作）。</li>
+</ol>
+<h1 id="对于volatile型变量的特殊规则"><a href="#对于volatile型变量的特殊规则" class="headerlink" title="对于volatile型变量的特殊规则"></a>对于volatile型变量的特殊规则</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;关键字volatile可以说是Java虚拟机提供的最轻量级的同步机制，当一个变量定义为volatile之后，他将具备两种特性：保证变量对所有的线程的可见性、禁止指令重排序优化。</p>
+<h2 id="保证变量对所有的线程的可见性"><a href="#保证变量对所有的线程的可见性" class="headerlink" title="保证变量对所有的线程的可见性"></a>保证变量对所有的线程的可见性</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;这里的“可见性”是指当一条线程修改了这个变量的值，新值对于其他线程来说是可以立即得知的：当线程1进行修改时，会导致线程2工作内存中缓存变量的缓存行无效，当线程2再次读取变量的值时会去主内存中读取。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;由于Java里面的运算并非原子操作，所以volatile变量的运算在并发下是不安全的，例如运算num++，它其实分为三步：读取num的值，将num+1，写入最新的num的值。因此，在<strong>不符合以下两条规则</strong>的运算场景中，我们仍然要通过加锁（使用synchronized或java.util.concurrent中的原子类）来保证原子性：</p>
+<ul>
+<li>运算结果并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值。</li>
+<li>变量不需要与其他的状态变量共同参与不变约束。</li>
+</ul>
+<h2 id="volatile变量禁止指令重排序优化"><a href="#volatile变量禁止指令重排序优化" class="headerlink" title="volatile变量禁止指令重排序优化"></a>volatile变量禁止指令重排序优化</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;普通的变量仅仅会保证在该方法的执行过程中所有的依赖赋值结果的地方都能获取到正确的结果，而不能保证变量赋值操作的顺序与程序代码中的执行顺序一致，而volatile变量将会禁止此情况发生。举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//x,y为非volatile变量</span><br><span class="line">//flag为volatile变量</span><br><span class="line"></span><br><span class="line">x = 2           //语句1</span><br><span class="line">y = 1           //语句2</span><br><span class="line">flag = true     //语句3</span><br><span class="line">x = 3           //语句4</span><br><span class="line">y = 0           //语句5</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;由于flag为volatile变量，所以在进行指令重排序时，不会将语句3放到语句1、2之前，不会将语句3放到语句4、5之后；但是语句1和2、语句3和4的执行顺序是不做保证的。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;它是通过内存屏障和禁止重排序来实现的：</p>
+<ul>
+<li>对volatile变量执行写操作时，会在写操作后加入一条store屏障指令</li>
+<li>对volatile变量进行读操作时，会在读操作前加入一条load屏障执令</li>
+</ul>
+<h1 id="先行发生原则-happens-before"><a href="#先行发生原则-happens-before" class="headerlink" title="先行发生原则(happens-before)"></a>先行发生原则(happens-before)</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>先行发生</strong>时Java内存模型中定义的两项操作之间的偏序关系，如果操作A先行发生于操作B，其实就是说在发生操作B之前，操作A产生的影响能够被操作B观察到，“影响”包括修改了内存中共享变量的值，发送了的消息，调用了方法等。<strong>先行发生原则</strong>是判断数据是否存在竞争、线程是否安全的主要依据，依靠这个原则，我们可以通过几条规则一览子地解决<strong>并发环境</strong>下两个操作之间是否可能存在冲突的所有问题。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;下面是Java内存模型下一些“天然的”先行发生关系，这些先行发生关系无须任何同步器协助就已经存在，可以在编码中直接使用。如果两个操作之间的关系不在此列，并且无法从下列规则推导出来的话，他们就没有顺序性保障，虚拟机可以对它们随意的进行重排序。</p>
+<ul>
+<li><strong>程序次序规则（Program Order Rule）</strong>：在一个线程内，按照程序代码顺序，书写在前面的操作先行发生于书写后面的操作。准确的说，应该是控制流顺序而不是代码顺序，因为还有分支、循环等结构。</li>
+<li><strong>管程锁定规则（Monitor Lock Rule）</strong>：一个unlock操作先行发生于后面对同一个锁的lock操作。这里必须强调的是<strong>同一个锁</strong>，而“后面”是指<strong>时间</strong>上的先后顺序。</li>
+<li><strong>volatile变量规则（volatile Variable Rule）</strong>：对一个volatile变量的写操作先行发生于后面对这个变量的读操作，这里的“后面”指<strong>时间</strong>上的先后顺序。</li>
+<li><strong>线程启动规则（Thread Start Rule）</strong>：Thread对象的start()方法先行发生于此线程的每一个动作。</li>
+<li><strong>线程终止规则（Thread Termination Rule</strong>）：线程中所有的操作都先行发生于对此线程终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值等手段检测到线程已经终止执行。</li>
+<li><strong>线程中断规则（Thread Interruption Rule）</strong>：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生，可以通过Thread.interrupted()方法检测到是否有中断发生。</li>
+<li><strong>对象终结规则（Finalizer Rule）</strong>：一个对象的初始化完成（构造函数执行结束）先行发生于它的finalize()方法的开始。</li>
+<li><strong>传递性（Transitivity</strong>）：如果A操作先行发生于B操作，B操作先行发生于C操作，那么A操作先行发生于C操作。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>注意</strong>：时间先后顺序与先行发生原则之间基本没有太大的关系，所以我们<strong>衡量并发安全</strong>问题的时候不要受到时间顺序的干扰，<strong>一切必须以先行发生原则为准</strong>。</p>
+<hr>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/12/14/Java内存模型/">Java内存模型</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">JKingslee的博客</a></p>
+        <p><span>发布时间:</span>2017-12-14, 09:08:53</p>
+        <p><span>最后更新:</span>2018-05-23, 21:47:50</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/14/Java内存模型/" title="Java内存模型">http://yoursite.com/2017/12/14/Java内存模型/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/12/14/Java内存模型/　　作者: JKingslee的博客" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/12/15/关于Java虚拟机的垃圾回收/">
+                    关于Java虚拟机的垃圾回收
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/12/08/微机原理基础/">
+                    微机原理基础知识
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#主内存与工作内存"><span class="toc-number">1.</span> <span class="toc-text">主内存与工作内存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内存间的交互操作"><span class="toc-number">2.</span> <span class="toc-text">内存间的交互操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#对于volatile型变量的特殊规则"><span class="toc-number">3.</span> <span class="toc-text">对于volatile型变量的特殊规则</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#保证变量对所有的线程的可见性"><span class="toc-number">3.1.</span> <span class="toc-text">保证变量对所有的线程的可见性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile变量禁止指令重排序优化"><span class="toc-number">3.2.</span> <span class="toc-text">volatile变量禁止指令重排序优化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#先行发生原则-happens-before"><span class="toc-number">4.</span> <span class="toc-text">先行发生原则(happens-before)</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Java内存模型　| Kingslee的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/12/14/Java内存模型/" data-title="Java内存模型" data-url="http://yoursite.com/2017/12/14/Java内存模型/"></div>
+    <script>
+        var duoshuoQuery = {short_name:""};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/12/15/关于Java虚拟机的垃圾回收/" title="上一篇: 关于Java虚拟机的垃圾回收">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/12/08/微机原理基础/" title="下一篇: 微机原理基础知识">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/MySQL查询性能优化/">MySQL查询性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/MySQL相关笔记/">MySQL相关笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/25/JAVA实现K-means算法/">JAVA实现K-means算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/20/深入Web请求过程/">深入Web请求过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/02/浅析Synchronized和ReentrantLock的区别/">浅析Synchronized和ReentrantLock的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/20/Java线程池/">Java线程池</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/15/关于Java虚拟机的垃圾回收/">关于Java虚拟机的垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/14/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/微机原理基础/">微机原理基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/虚拟机类加载机制/">虚拟机类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/06/8086地址分段与寻址方式/">8088/8086地址分段与寻址方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/04/8086寄存器详解/">8088/8086CPU的功能结构（二）——内部寄存器详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/8086CPU的功能结构（一）——内部结构与内部寄存器/">8088/8086CPU的功能结构（一）——内部结构与内部寄存器</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 JKingslee的博客
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+             title: "a.article-title, .article-more-link a", 
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
